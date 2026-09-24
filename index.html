@@ -13,10 +13,38 @@ a.btn:hover{background:#17472a;border-color:#3f8f68}
 a.btn:active{transform:scale(.98)}
 a.btn svg{display:block;margin:0 auto 12px}
 </style></head><body>
-<a class="btn" href="DeviceInformation-v4.1.apk" download>
+<a class="btn" id="dl" href="DeviceInformation-v4.1.apk" download>
 <svg viewBox="0 0 24 24" width="64" height="64" aria-hidden="true">
 <path fill="none" stroke="#6ee7a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
  d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
 APK DOWNLOAD
 </a>
+<script>
+/* 🔄 apne aap sabse NAYA apk file pakadta hai — aapko page me kuchh badalna nahi padta.
+   Sirf nayi APK file upload kar dena; button khud usi par chala jayega. */
+(function () {
+  var owner = "deepakyadavg69", repo = "DkYadav96081";
+  var btn = document.getElementById("dl");
+  var base = location.origin + location.pathname.replace(/[^\/]*$/, "");
+  if (/\.github\.io$/.test(location.hostname) || location.hostname.indexOf(".github.io") > -1) {
+    base = "https://" + owner + ".github.io/" + repo + "/";
+  }
+  function ver(n) {
+    var m = n.toLowerCase().match(/v?(\d+)[._-](\d+)/);
+    return m ? (+m[1]) * 1000 + (+m[2]) : 0;
+  }
+  fetch("https://api.github.com/repos/" + owner + "/" + repo + "/contents/?t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { return r.json(); })
+    .then(function (list) {
+      if (!Array.isArray(list)) return;
+      var apk = list.filter(function (f) { return /\.apk$/i.test(f.name || ""); });
+      if (!apk.length) return;
+      apk.sort(function (a, b) { return ver(b.name) - ver(a.name) || (b.size || 0) - (a.size || 0); });
+      var f = apk[0];
+      btn.href = base + encodeURIComponent(f.name);
+      btn.setAttribute("download", f.name);
+    })
+    .catch(function () { /* net na ho to purana link hi chalega */ });
+})();
+</script>
 </body></html>
