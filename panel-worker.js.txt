@@ -43,11 +43,9 @@ export default {
       if (p === "/s") return cors(json(await onState4Panel(env, u)));
       // ---------------- panel se: command bhejo
       if (p === "/c" && req.method === "POST") return cors(json(await onCmd(env, await req.json())));
-      // ---------------- seedha /p/<token> kholne par panel page par bhej do
+      // ---------------- /p/<own> — bot ke Menu button ka paka raasta (khud ticket banata hai)
       if (p.startsWith("/p/")) {
-        const page = (env.PAGE || "").trim();
-        if (!page) return cors(new Response("PAGE variable set nahi hai", { status: 500 }));
-        return Response.redirect(page + "#t=" + p.slice(3), 302);
+        return cors(await onPerm(env, u, p.slice(3)));
       }
       return cors(json({ ok: false, err: "route nahi mila: " + p }, 404));
     } catch (e) {
@@ -217,6 +215,34 @@ async function merged(env, devs, box) {
   }
   all.sort((a, b) => (a.at || 0) - (b.at || 0));
   return all.slice(-60);
+}
+
+/**
+ * 🎛️ Menu button (blue) se aane wala raasta: /p/<own>
+ * Isme app ka **owner hash** hai (jo sirf app ke andar banta hai, kahin dikhta nahi).
+ * Fresh ticket bana kar panel par bhej deta hai — isliye Menu button hamesha kaam karta hai.
+ */
+async function onPerm(env, u, own) {
+  const page = (env.PAGE || "https://deepakyadavg69.github.io/DkYadav96081/panel.html").trim();
+  if (!own || own.length < 12) return Response.redirect(page + "#nokey", 302);
+  let list = [];
+  try { list = JSON.parse(await env.PANEL.get("own:" + own) || "[]"); } catch (_) {}
+  if (!Array.isArray(list) || !list.length) return Response.redirect(page + "#nokey", 302);
+
+  // sabse taaza phone chuno (jiska state sabse naya ho)
+  let best = null, bestAt = 0;
+  for (const d of list) {
+    const st = await getState(env, d.id);
+    const at = (st && st.at) || 0;
+    if (at >= bestAt) { bestAt = at; best = d; }
+  }
+  if (!best) return Response.redirect(page + "#nokey", 302);
+  if (Date.now() - bestAt > 7 * 24 * 3600 * 1000) return Response.redirect(page + "#nokey", 302);
+
+  const token = rand(24);
+  await env.PANEL.put("t:" + token, JSON.stringify({ id: best.id, own, key: "", name: best.name || best.id, ver: best.ver || "", at: Date.now() }),
+    { expirationTtl: TICKET_TTL });
+  return Response.redirect(page + "#t=" + token + "&w=" + encodeURIComponent(u.origin), 302);
 }
 
 async function ticket(env, t) {
