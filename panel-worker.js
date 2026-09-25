@@ -133,13 +133,18 @@ async function onResult(env, b) {
 }
 
 async function onEvent(env, b) {
-  const { key, id, text, notif } = b || {};
+  const { key, id, text, notif, thumb } = b || {};
   if (!key || !id || !text) return { ok: false, err: "adhoora" };
   const bound = await env.PANEL.get("d:" + key);
   if (bound && bound !== id) return { ok: false, err: "key mel nahi khata" };
   if (!bound) return { ok: false, err: "pehle halat bhejo" };
   const box = notif ? "nt:" : "ev:";
   await push(env, box + id, { kind: notif ? "khabar" : "jawab", text: String(text).slice(0, 800), at: Date.now() });
+  // 📷 chhoti tasveer (sirf sabse nayi, alag jagah — list bhari na ho)
+  if (thumb && String(thumb).startsWith("data:image/") && String(thumb).length < 300_000) {
+    await env.PANEL.put("th:" + id, JSON.stringify({ thumb: String(thumb), text: String(text || "").slice(0, 200), at: Date.now() }),
+      { expirationTtl: 60 * 60 * 6 });
+  }
   return { ok: true };
 }
 
@@ -169,7 +174,8 @@ async function onOpen(env, u) {
     ok: true, primary: dev.id,
     devs,
     state: await getState(env, dev.id),
-    events: await merged(env, devs, "ev:"), notis: await merged(env, devs, "nt:")
+    events: await merged(env, devs, "ev:"), notis: await merged(env, devs, "nt:"),
+    thumbs: await thumbsOf(env, devs)
   };
 }
 
@@ -183,26 +189,38 @@ async function onState4Panel(env, u) {
   const out = {
     ok: true, primary: dev.id, devs,
     state: await getState(env, dev.id),
-    events: await merged(env, devs, "ev:"), notis: await merged(env, devs, "nt:")
+    events: await merged(env, devs, "ev:"), notis: await merged(env, devs, "nt:"),
+    thumbs: await thumbsOf(env, devs)
   };
   if (cid) out.result = JSON.parse(await env.PANEL.get("r:" + cid) || "null");
   return out;
 }
 
 async function onCmd(env, b) {
-  const { t, text } = b || {};
+  const { t, text, to } = b || {};
   if (!t || !text || String(text).trim().length < 2) return { ok: false, err: "adhoori command" };
   const dev = await ticket(env, t);
   if (!dev) return { ok: false, err: "link purani ho gayi — bot me dobara /panel" };
   const txt = String(text).trim().slice(0, 300);
+
+  // 🎯 v4.9: kis phone ko bhejni hai (agar bataya ho) — warna jis phone ne ticket liya
+  let goal = dev.id;
+  let goalName = dev.name || dev.id;
+  if (to && to !== dev.id) {
+    const list = await ownList(env, dev);
+    const found = list.filter((d) => d.id === to)[0];
+    if (!found) return { ok: false, err: "ye phone is panel me nahi hai" };
+    goal = to; goalName = found.name || to;
+  }
+
   const cid = rand(10);
   let q = [];
-  try { q = JSON.parse(await env.PANEL.get("q:" + dev.id) || "[]"); } catch (_) {}
+  try { q = JSON.parse(await env.PANEL.get("q:" + goal) || "[]"); } catch (_) {}
   if (!Array.isArray(q)) q = [];
   q.push({ cid, text: txt, at: Date.now() });
-  await env.PANEL.put("q:" + dev.id, JSON.stringify(q.slice(-QMAX)), { expirationTtl: 3600 });
-  await push(env, "ev:" + dev.id, { kind: "bheja", text: txt, at: Date.now() });
-  return { ok: true, cid };
+  await env.PANEL.put("q:" + goal, JSON.stringify(q.slice(-QMAX)), { expirationTtl: 3600 });
+  await push(env, "ev:" + goal, { kind: "bheja", text: txt, at: Date.now() });
+  return { ok: true, cid, to: goal, name: goalName };
 }
 
 // ============================================================ chhote helpers
@@ -226,6 +244,18 @@ async function ownList(env, dev) {
     out.push({ id: d.id, name: d.name || d.id, ver: (st && st.ver) || d.ver || "", state: st });
   }
   return out;
+}
+
+async function thumbsOf(env, devs) {
+  const out = [];
+  for (const d of devs) {
+    try {
+      const raw = await env.PANEL.get("th:" + d.id);
+      if (raw) { const o = JSON.parse(raw); out.push({ ...o, dev: d.name || d.id, did: d.id }); }
+    } catch (_) {}
+  }
+  out.sort((a, b) => (a.at || 0) - (b.at || 0));
+  return out.slice(-3);
 }
 
 async function merged(env, devs, box) {
