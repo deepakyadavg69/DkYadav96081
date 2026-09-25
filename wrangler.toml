@@ -1,0 +1,11 @@
+# 🎛️ Guardian Panel ka pul — ek click me deploy (Cloudflare)
+name = "guard-panel"
+main = "panel-worker.js"
+compatibility_date = "2024-11-01"
+
+# 🗂️ KV (chahein to) — bina iske bhi chalta hai (best-effort cache).
+# Pakka chalane ke liye: Cloudflare → Workers → KV → naya namespace "guard-panel"
+# → phir neeche wali do lines se # hata kar `id` daal dein.
+# [[kv_namespaces]]
+# binding = "PANEL"
+# id = "<yahan namespace ki id>"
