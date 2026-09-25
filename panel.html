@@ -1,0 +1,825 @@
+<!doctype html><html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Guardian Grid — Panel Demo</title>
+<style>
+:root{--bg:#000;--panel:#090b10;--panel2:#0d1118;--line:#1e2633;--text:#f5f7ff;--muted:#8490a3;
+ --violet:#9b7cff;--cyan:#2de2e6;--green:#34d399;--amber:#fbbf24;--red:#fb7185;--fs:1}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;font-size:calc(14px * var(--fs))}
+html,body{margin:0;overflow-x:hidden;max-width:100%}
+body{background:radial-gradient(circle at 72% -10%,#1e123d 0,transparent 36%),#000;color:var(--text);
+ font:1rem/1.55 system-ui,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh}
+img,svg,canvas{max-width:100%}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}
+/* ---------- sidebar ---------- */
+.side{padding:22px 14px;border-right:1px solid var(--line);background:#050608;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{font-weight:800;font-size:1.5rem;letter-spacing:.3px;margin:0 10px 4px}.brand b{color:var(--cyan)}
+.sub{color:var(--muted);font-size:.86rem;margin:0 10px 22px}
+.navtitle{text-transform:uppercase;color:#566174;font-size:.72rem;letter-spacing:1.3px;margin:18px 12px 7px}
+.nav button{width:100%;border:1px solid transparent;background:transparent;color:#9aa5b8;text-align:left;
+ padding:11px 13px;border-radius:10px;margin:2px 0;cursor:pointer;font-weight:600;font-size:.96rem;
+ transition:background .2s,color .2s,border-color .2s,transform .15s}
+.nav button:hover{color:#fff;background:#141024;border-color:#3d2a66}
+.nav button.active{color:#fff;background:#17102b;border-color:#4e347e;box-shadow:0 0 20px #7c3aed26}
+.nav .badge{margin-left:6px;background:#3b1220;color:var(--red);font-size:.7rem;padding:1px 6px;border-radius:9px}
+/* ---------- main ---------- */
+.main{padding:clamp(14px,2.4vw,26px) clamp(12px,2.4vw,28px) 44px;max-width:1450px;width:100%;margin:0 auto;min-width:0}
+.view{display:none;animation:fade .4s ease both}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.top h1{font-size:clamp(1.35rem,4.4vw,1.75rem);margin:0;line-height:1.25}
+.top p{color:var(--muted);margin:5px 0 0;font-size:.9rem}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.select,.btn{border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--text);
+ padding:9px 12px;font-size:.95rem;max-width:100%}
+.btn{cursor:pointer;font-weight:700;transition:.18s}
+.btn.primary{background:var(--violet);border-color:var(--violet);color:#100a1e}
+.btn:hover{filter:brightness(1.12);box-shadow:0 0 17px #9b7cff4f;transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.live{display:inline-flex;align-items:center;gap:7px;border:1px solid #1d4d43;background:#08201c;color:var(--green);
+ padding:6px 11px;border-radius:20px;font-size:.82rem;font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.7s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 #34d39988}70%{box-shadow:0 0 0 9px #34d39900}100%{box-shadow:0 0 0 0 #34d39900}}
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat,.card{background:linear-gradient(145deg,#0c1017,#08090d);border:1px solid var(--line);border-radius:15px;
+ padding:clamp(12px,2.6vw,17px);box-shadow:0 8px 25px #000;min-width:0}
+.stat{position:relative;overflow:hidden;transition:transform .25s,border-color .25s;animation:rise .5s ease both}
+.stat:hover{transform:translateY(-3px);border-color:#3b2a63}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stat:after{content:"";position:absolute;width:80px;height:80px;border-radius:50%;right:-28px;top:-28px;background:#9b7cff1a;
+ animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+.label{color:var(--muted);font-size:.82rem;display:block}
+.value{font-size:clamp(1.35rem,4.6vw,1.65rem);font-weight:800;margin-top:4px;letter-spacing:.3px}
+.green{color:var(--green)}.cyan{color:var(--cyan)}.amber{color:var(--amber)}.violet{color:var(--violet)}.red{color:var(--red)}
+.section{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 10px;flex-wrap:wrap}
+.section h2{font-size:1.05rem;margin:0}
+.link{color:var(--cyan);font-size:.82rem;cursor:pointer}
+/* ---------- devices ---------- */
+.devices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,255px),1fr));gap:12px}
+.device{transition:transform .25s,border-color .25s;position:relative;overflow:hidden}
+.device:hover{transform:translateY(-3px);border-color:#4a3577}
+.device.busy{border-color:var(--violet);box-shadow:0 0 26px #9b7cff33}
+.device.offline{background:linear-gradient(145deg,#0a0c11,#07080b)}
+.offnote{margin-top:12px;padding:10px 12px;border:1px dashed #3a2b36;border-radius:11px;background:#120b10;
+ color:#c9a9b4;font-size:.8rem;line-height:1.6}
+.devicehead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.device h3{margin:0;font-size:1rem}
+.status{font-size:.72rem;color:var(--green);background:#0b2b20;padding:4px 8px;border-radius:15px;white-space:nowrap}
+.status.off{color:var(--red);background:#32151d}
+.status.warn{color:var(--amber);background:#2d2206}
+.meta{color:var(--muted);font-size:.8rem;margin:5px 0 14px;word-break:break-word}
+.bar{height:6px;background:#1b2330;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--violet),var(--cyan));
+ transition:width 1.1s cubic-bezier(.3,1,.4,1)}
+.devicefoot{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.76rem;margin-top:7px;flex-wrap:wrap}
+.qrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:6px;margin-top:12px}
+.qrow button{background:#0b0f16;border:1px solid var(--line);color:#dce3f0;border-radius:10px;padding:9px 4px;
+ font-size:.76rem;cursor:pointer;font-weight:700;transition:.18s;line-height:1.3;position:relative;overflow:hidden}
+.qrow button:hover{border-color:#6d4bb4;background:#12172a;transform:translateY(-2px)}
+.qrow button:active{transform:scale(.95)}
+.qrow .em{display:block;font-size:1.15rem;margin-bottom:2px}
+/* ---------- quick actions ---------- */
+.lines{display:flex;flex-direction:column;gap:8px}
+.cmdrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#0b0f16;border:1px solid var(--line);
+ border-radius:12px;padding:12px 14px;color:#e6ebf5;font-weight:600;cursor:pointer;font-size:.95rem;line-height:1.35;
+ transition:border-color .18s,background .18s,transform .15s;position:relative;overflow:hidden}
+.cmdrow:hover{border-color:#6d4bb4;background:#12172a;transform:translateX(3px)}
+.cmdrow:active{transform:scale(.99)}
+.cmdrow .em{font-size:1.2rem;flex:0 0 26px;text-align:center}
+.cmdrow .nm{flex:1;min-width:0}
+.cmdrow .tagline{display:block;color:#5c6879;font-size:.72rem;font-weight:600;margin-top:2px;text-transform:uppercase;letter-spacing:.6px}
+.cmdrow .hint{display:block;color:#8d7bb8;font-size:.74rem;margin-top:3px;font-weight:600}
+.cmdrow .hint.mono{color:#7d8aa0;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:500}
+.cathead{display:flex;justify-content:space-between;align-items:center;margin:16px 0 6px;padding:0 3px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.cathead span{font-weight:800;font-size:.95rem}
+.cathead small{color:var(--muted);font-size:.75rem}
+.cmdrow .go{color:#5c6879;font-size:1.05rem}
+.cmdrow:after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan));transition:.9s}
+.cmdrow.sending{border-color:var(--violet);box-shadow:0 0 18px #9b7cff33}
+.cmdrow.sending:after{width:100%}
+.cmdrow.done{border-color:#2f6b4f;background:#0c1a14}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(102px,1fr));gap:10px}
+.quick button{min-height:80px;background:#0b0f16;border:1px solid var(--line);color:#dce3f0;border-radius:12px;cursor:pointer;
+ font-size:.84rem;font-weight:700;transition:.2s;padding:10px 6px;line-height:1.35;position:relative;overflow:hidden}
+.quick button:hover{border-color:#6d4bb4;transform:translateY(-2px);background:#12172a}
+.quick button:active{transform:scale(.96)}
+.quick strong{display:block;font-size:1.4rem;color:var(--violet);margin-bottom:3px;transition:transform .2s}
+.quick button:hover strong{transform:scale(1.12)}
+/* ---------- tasks / activity ---------- */
+.columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.task,.activity{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.task:last-child,.activity:last-child{border:0}
+.icon{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:10px;background:#18112d;color:var(--violet);font-size:1rem}
+.taskmain{flex:1;min-width:0}
+.taskmain b{display:block;font-size:.9rem;word-break:break-word}
+.taskmain small,.time{color:var(--muted);font-size:.76rem}
+.badge{font-size:.68rem;padding:3px 7px;border-radius:11px;background:#092b24;color:var(--green);white-space:nowrap}
+.badge.wait{background:#2d2206;color:var(--amber)}
+.badge.bad{background:#3b1220;color:var(--red)}
+.badge.info{background:#0e2233;color:#5eb8ff}
+.feed{max-height:340px;overflow:auto}
+.item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);animation:slide .45s ease both}
+.item:last-child{border:0}
+@keyframes slide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+/* ---------- smart box ---------- */
+.smart{position:relative;border-radius:14px;padding:14px 16px;background:#0b0f1a;border:1px solid #2b2a52;overflow:hidden}
+.smart:before{content:"";position:absolute;inset:-3px;z-index:0;filter:blur(11px);
+ background:conic-gradient(from 0deg,#9b7cff33,#2de2e633,#34d39933,#9b7cff33);animation:spin 7s linear infinite}
+.smart>*{position:relative;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pin{position:absolute;transform:translate(-50%,-50%);text-align:center}
+.pin .d:before{content:"";position:absolute;inset:-9px;border-radius:50%;border:1.5px solid currentColor;opacity:.55;animation:ping 2.4s infinite}
+@keyframes ping{0%{transform:scale(.5);opacity:.85}100%{transform:scale(1.9);opacity:0}}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.chip{border:1px solid var(--line);background:var(--panel2);color:#c6cee0;border-radius:20px;padding:7px 13px;
+ font-size:.84rem;cursor:pointer;transition:.18s;font-weight:600}
+.chip:hover{border-color:#4e347e;transform:translateY(-1px)}
+.chip.on{background:#1c1338;border-color:#6d4bb4;color:#fff;box-shadow:0 0 14px #7c3aed33}
+/* ---------- table / misc ---------- */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.t{width:100%;border-collapse:collapse;font-size:.86rem;min-width:430px}
+table.t th,table.t td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{color:#6d7b90;font-weight:600;font-size:.74rem;text-transform:uppercase;letter-spacing:.7px}
+table.t tr:hover td{background:#0c1017}
+.skel{height:6px;border-radius:6px;background:linear-gradient(90deg,#121a26,#1e2a3d,#121a26);background-size:200% 100%;animation:shim 1.8s linear infinite}
+@keyframes shim{to{background-position:-200% 0}}
+.syncbar{height:2px;border-radius:2px;margin:12px 0 0;
+ background:linear-gradient(90deg,transparent,var(--cyan),transparent);background-size:220% 100%;animation:shim 2.4s linear infinite}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;color:#a9b6c9;font-size:.8rem}
+.footer{color:#586579;font-size:.76rem;margin-top:22px;text-align:center;line-height:1.8}
+.toast{position:fixed;right:14px;left:14px;bottom:14px;background:#121827;border:1px solid #465371;color:#fff;padding:12px 15px;
+ border-radius:11px;box-shadow:0 10px 30px #000;z-index:99;font-size:.9rem;display:none;max-width:520px;margin:0 auto}
+.toast.show{display:block;animation:pop .28s}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.idea{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+.idea:last-child{border:0}
+.idea .em{font-size:1.2rem;flex:0 0 26px}
+.idea .txt{flex:1;min-width:0}.idea b{font-size:.9rem;display:block}.idea small{color:var(--muted);font-size:.8rem}
+.addbtn{border:1px solid var(--line);background:#12172a;color:#cfd8e8;border-radius:10px;padding:7px 11px;font-size:.8rem;
+ cursor:pointer;font-weight:700;white-space:nowrap;transition:.16s}
+.addbtn:hover{border-color:#6d4bb4}
+.addbtn.on{background:#0b2b20;border-color:#2f6b4f;color:#6ee7a0}
+.phone{border:2px solid #232c3c;border-radius:26px;padding:12px;background:#05070b;max-width:320px;margin:0 auto;box-shadow:0 12px 40px #000 inset}
+.phone .notch{width:80px;height:5px;background:#1b2330;border-radius:6px;margin:0 auto 10px}
+.pbtn{display:flex;align-items:center;gap:12px;width:100%;border:1px solid var(--line);border-radius:16px;padding:14px;
+ margin:9px 0;background:#0b0f16;color:#eef2f9;font-size:1rem;font-weight:800;cursor:pointer;transition:.18s;text-align:left}
+.pbtn:hover{border-color:#6d4bb4;transform:translateY(-2px)}
+.pbtn .em{font-size:1.5rem}
+.pbtn.sos{background:#2a0f16;border-color:#6d2230;color:#ffd6de}
+.pbtn.ok{background:#0b2419;border-color:#2c6b4f;color:#c8ffe4}
+.tgbar{display:flex;align-items:center;gap:11px;padding:9px 13px;background:#0b0f16;
+ border-bottom:1px solid var(--line)}
+.tgx{width:30px;height:30px;flex:0 0 30px;border-radius:9px;border:1px solid var(--line);background:#12172a;color:#cfd8e8;
+ cursor:pointer;font-size:.9rem;line-height:1}
+.tgx:hover{border-color:#6d4bb4;color:#fff}
+.tgin{flex:1;min-width:0}
+.tgin b{font-size:.92rem;display:block}
+.tgin small{display:block;color:var(--muted);font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tglive{display:inline-flex;align-items:center;gap:6px;border:1px solid #1d4d43;background:#08201c;color:var(--green);
+ padding:5px 10px;border-radius:20px;font-size:.74rem;font-weight:700;white-space:nowrap}
+.smallbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.smallbar button{background:#0b0f16;border:1px solid var(--line);color:#cfd8e8;border-radius:9px;padding:6px 10px;font-size:.8rem;cursor:pointer}
+.smallbar button:hover{border-color:#6d4bb4}
+/* ---------- phone: sidebar top me, kuchh cut na ho ---------- */
+@media(max-width:940px){
+ .shell{grid-template-columns:minmax(0,1fr)}
+ .side{position:sticky;top:0;z-index:60;height:auto;border-right:0;border-bottom:1px solid var(--line);
+  background:#050608ee;backdrop-filter:blur(9px);padding:9px 10px 7px}
+ .brand{font-size:1.05rem;margin:0 4px 0;display:inline-block}
+ .sub{display:none}
+ .navtitle{display:none}
+ .nav{display:flex;gap:6px;overflow-x:auto;padding:7px 0 2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+ .nav::-webkit-scrollbar{display:none}
+ .nav button{white-space:nowrap;width:auto;padding:8px 12px;font-size:.84rem;margin:0}
+ .main{padding:14px 12px 40px}
+ .toast{left:10px;right:10px;bottom:10px}
+}
+@media(max-width:520px){
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .qrow{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .quick{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .section h2{font-size:1rem}
+}
+@media(max-width:360px){.stats,.quick,.qrow{grid-template-columns:minmax(0,1fr)}}
+</style></head><body>
+
+<!-- ===== Telegram ke andar hi (Mini App) — bahar ka koi link nahi ===== -->
+<div class="tgbar">
+  <button class="tgx" onclick="toast('✕ Bot me wapas')" title="Band karo">✕</button>
+  <div class="tgin"><b>◆ Guardian Panel</b>
+    <small>Bot ke andar khula hai · Deepak_9608122927_bot · Telegram Mini App</small></div>
+  <span class="tglive"><span class="dot"></span> LIVE</span>
+</div>
+
+<div class="shell">
+<aside class="side">
+  <p class="brand"><b>◆</b> Guardian Grid</p>
+  <p class="sub">Family safety command center</p>
+  <div class="navtitle">Workspace</div>
+  <nav class="nav" id="nav">
+    <button data-v="dash" class="active">⌂ &nbsp; Dashboard</button>
+    <button data-v="dev">▣ &nbsp; Devices</button>
+    <button data-v="cmd">⌘ &nbsp; Commands</button>
+    <button data-v="task">◷ &nbsp; Tasks</button>
+    <button data-v="log">≡ &nbsp; Activity log</button>
+    <div class="navtitle">Management</div>
+    <button data-v="perm">♢ &nbsp; Permissions</button>
+    <button data-v="emer">✚ &nbsp; Emergency</button>
+    <button data-v="set">⚙ &nbsp; Settings</button>
+  </nav>
+</aside>
+
+<main class="main">
+<!-- ===================== DASHBOARD ===================== -->
+<section class="view active" id="v-dash">
+  <div class="top">
+    <div><h1 id="greet">Namaste, Admin 👋</h1><p>All paired devices ka secure overview. <span class="live" style="margin-left:4px"><span class="dot"></span> LIVE</span></p></div>
+    <div class="actions">
+      <div class="smallbar">
+        <button onclick="zoom(-1)" title="Chhota">A−</button>
+        <button onclick="zoom(1)" title="Bada">A+</button>
+      </div>
+      <select class="select" id="devSel" onchange="setTarget(this.value)"></select>
+      <button class="btn primary" onclick="toast('➕ Add device — bot se QR aayega, phone se scan, bas')">+ Add device</button>
+    </div>
+  </div>
+
+  <section class="stats">
+    <div class="stat" style="animation-delay:.02s"><span class="label">Paired devices</span><div class="value violet" id="cPaired">3</div><span class="label" id="cPairedSub">2 online · 1 offline</span></div>
+    <div class="stat" style="animation-delay:.08s"><span class="label">Active tasks</span><div class="value cyan" id="cTask">04</div><span class="label">All consent verified</span></div>
+    <div class="stat" style="animation-delay:.14s"><span class="label">Storage used</span><div class="value amber" id="cStore">42%</div><span class="label">Healthy across devices</span></div>
+    <div class="stat" style="animation-delay:.2s"><span class="label">Safety status</span><div class="value green" id="cSafe">Good</div><span class="label" id="cSafeSub">No critical alerts</span></div>
+  </section>
+  <div class="syncbar"></div>
+
+  <div class="section"><h2>Paired device — jo chuna hai</h2><span><span class="link" onclick="go('cmd')">All commands →</span> &nbsp; <span class="link" onclick="go('dev')">View all →</span></span></div>
+  <div class="chips" id="cardChips"></div>
+  <section class="devices" id="devCards"></section>
+
+
+  <div class="columns" style="margin-top:18px">
+    <div>
+      <div class="section"><h2>Live activity</h2><span class="link" onclick="go('log')">Poora log →</span></div>
+      <div class="card feed" id="feed"></div>
+    </div>
+    <div>
+      <div class="section"><h2>🔔 Recent notification</h2><span class="link" onclick="toast('Yahi format Notification bot par jata hai — device naam + ID ke saath')">Format →</span></div>
+      <div class="card feed" id="nfeed"></div>
+    </div>
+  </div>
+
+  <div class="section"><h2>Naksha — teeno phone</h2><span class="link" onclick="toast('24 ghante ka safar (trail) — demo me joda hua hai')">24 ghante ka safar →</span></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="position:relative;height:230px;background:radial-gradient(circle at 28% 32%,#101c2b 0,transparent 45%),radial-gradient(circle at 72% 68%,#161229 0,transparent 45%),#070a10">
+      <div class="pin" style="left:30%;top:38%;color:#9b7cff"><div class="d" style="width:13px;height:13px;border-radius:50%;background:#9b7cff;margin:0 auto 3px;position:relative"></div><small style="color:#c9d4e2;font-size:.76rem;background:#0009;padding:1px 6px;border-radius:8px">Mera phone</small></div>
+      <div class="pin" style="left:63%;top:30%;color:#2de2e6"><div class="d" style="width:13px;height:13px;border-radius:50%;background:#2de2e6;margin:0 auto 3px;position:relative"></div><small style="color:#c9d4e2;font-size:.76rem;background:#0009;padding:1px 6px;border-radius:8px">Papa · bazaar</small></div>
+      <div class="pin" style="left:52%;top:72%;color:#8490a3"><div class="d" style="width:13px;height:13px;border-radius:50%;background:#8490a3;margin:0 auto 3px;position:relative"></div><small style="color:#c9d4e2;font-size:.76rem;background:#0009;padding:1px 6px;border-radius:8px">Mummy · ghar (2 ghante pehle)</small></div>
+      <div class="mono" style="position:absolute;left:10px;bottom:8px;font-size:.7rem">demo map — asli me live pin + raasta</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🤖 Smart sujhav</h2><span class="link" onclick="toast('🧠 Aage se aise sujhav khud aayenge — aapke hisaab se')">Settings →</span></div>
+  <div class="smart">
+    <b id="smartText">Papa ka phone 42% par hai aur charge par laga hai — “charge hata do” bhejein?</b>
+    <div style="display:flex;gap:8px;margin-top:9px;flex-wrap:wrap">
+      <button class="chip on" onclick="toast('✅ Bhej diya — Papa ke phone par friendly message chala gaya')">✅ Bhej do</button>
+      <button class="chip" onclick="nextSmart()">🔁 Doosra sujhav</button>
+      <button class="chip" onclick="toast('🧠 Theek hai — aise hi karte rahenge')">🧠 Aise hi karte raho</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ===================== DEVICES ===================== -->
+<section class="view" id="v-dev">
+  <div class="top"><div><h1>Devices</h1><p>Panel par naam alag-alag, APK sab par same — <b>DeviceInformation</b>.</p></div>
+    <button class="btn primary" onclick="toast('➕ Bot se QR aayega, naye phone se scan karo')">+ Device jodo</button></div>
+  <div class="card" style="padding:6px 12px"><div class="tw"><table class="t" id="devTable"></table></div></div>
+  <div class="section"><h2>Ek click me sab update</h2></div>
+  <div class="card">
+    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+      <div style="min-width:210px;flex:1">Teeno phone par naya version khud chal jaye — aapko kuchh karna nahi.
+        <div class="label" id="updLog" style="margin-top:5px">v4.5 sab par lagi hui hai ✅</div></div>
+      <button class="btn primary" onclick="pushAll()">⬆️ Sab phone update karo</button>
+    </div>
+  </div>
+  <div class="section"><h2>Device ke andar kya-kya</h2></div>
+  <div class="lines" id="devGrid"></div>
+</section>
+
+<!-- ===================== COMMANDS ===================== -->
+<section class="view" id="v-cmd">
+  <div class="top"><div><h1>Commands</h1><p>App ke <b>saare command</b> — asli kaam ka naam + asli command. Tap karo, seedha us phone me.</p></div>
+    <span class="live"><span class="dot"></span> <span id="targetName">Mera phone</span></span></div>
+  <div class="actions" style="margin-bottom:6px">
+    <input id="q" class="select" style="flex:1;min-width:180px" placeholder="🔎 Command dhoondo… photo, video, screenshot, location">
+    <button class="chip" onclick="toast('🎤 Bol kar bhi command de sakte ho — demo me joda hua hai')">🎤 Bolkar</button>
+  </div>
+  <div id="offlineNote" class="offnote" style="display:none"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="chips" id="catChips" style="margin-bottom:0"></div>
+    <span class="label" id="cmdCount"></span>
+  </div>
+  <div class="lines" id="cmdGrid"></div>
+  <p class="footer" style="text-align:left">⚙️ wale button me aage likhna hota hai (jaise <span class="mono">/vidcustom 3</span> = 3 minute ki video) — panel me likhne ka box khud khul jayega.</p>
+</section>
+
+<!-- ===================== TASKS ===================== -->
+<section class="view" id="v-task">
+  <div class="top"><div><h1>Tasks</h1><p>Jo kaam chal rahe hain / aage chalenge — sab ek jagah.</p></div>
+    <button class="btn primary" onclick="toast('➕ Naya task: location · live screenshot · video · dawa reminder')">+ Naya task</button></div>
+  <div class="card" id="taskList"></div>
+  <div class="section"><h2>Ek click wale kaam</h2></div>
+  <div class="lines" id="taskGrid"></div>
+</section>
+
+<!-- ===================== ACTIVITY LOG ===================== -->
+<section class="view" id="v-log">
+  <div class="top"><div><h1>Activity log</h1><p>Kis phone par, kab, kya hua — sab mehfooz.</p></div>
+    <button class="btn" onclick="toast('⬇️ Log download')">⬇️ Download</button></div>
+  <div class="chips" id="logChips"></div>
+  <div class="card" id="logFull"></div>
+</section>
+
+<!-- ===================== PERMISSIONS ===================== -->
+<section class="view" id="v-perm">
+  <div class="top"><div><h1>Permissions</h1><p>Android ne kaun si cheez band ki hai — ek click me theek.</p></div>
+    <button class="btn primary" onclick="toast('⚡ Sab phone par sab permission ek click me theek')">⚡ Sab theek karo</button></div>
+  <div class="card" style="padding:6px 12px"><div class="tw"><table class="t" id="permTable"></table></div></div>
+</section>
+
+<!-- ===================== EMERGENCY ===================== -->
+<section class="view" id="v-emer">
+  <div class="top"><div><h1>Emergency</h1><p>Madad ka waqt — sab kuchh ek jagah, bina ulajh.</p></div></div>
+  <div class="columns">
+    <div>
+      <div class="section" style="margin-top:0"><h2>Emergency contacts</h2></div>
+      <div class="card">
+        <div class="task"><div class="icon">👤</div><div class="taskmain"><b>Deepak (aap)</b><small>+91 9xxxx xxxxx · pehla number</small></div><span class="badge">Verified</span></div>
+        <div class="task"><div class="icon">🩺</div><div class="taskmain"><b>Doctor / Clinic</b><small>number jodein</small></div><button class="addbtn" onclick="toast('➕ Number jodne ka box')">+ Jodo</button></div>
+        <div class="task"><div class="icon">🚑</div><div class="taskmain"><b>108 / Ambulance</b><small>khud hi lagta hai</small></div><span class="badge">Auto</span></div>
+      </div>
+      <div class="section"><h2>SOS dabane par</h2></div>
+      <div class="card">
+        <div class="task"><div class="icon">🆘</div><div class="taskmain"><b>Aapko call + location + siren</b><small>teeno phone par alert · aapke bina band nahi hoga</small></div><span class="badge">ON</span></div>
+        <div class="task"><div class="icon">📳</div><div class="taskmain"><b>Family ring</b><small>ek dabane par sab phone baj jaye</small></div><span class="badge">ON</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="section" style="margin-top:0"><h2>Turant kaam (khatre me)</h2></div>
+      <div class="lines" id="emerGrid"></div>
+      <div class="section"><h2>Parents mode</h2></div>
+      <div class="card">
+        <div class="task"><div class="icon">♡</div><div class="taskmain"><b>Unke phone par aasan screen</b><small>5 bade button: SOS · theek hoon · pata bhejo · phone bajao · dawa</small></div>
+          <button class="addbtn" onclick="toast('✅ Parents mode ON — unke phone par aasan screen')">Chalao</button></div>
+        <div class="task"><div class="icon">☎️</div><div class="taskmain"><b>Scam call guard</b><small>anjaan/courier-lottery number = aapko alert + block list</small></div><span class="badge">ON</span></div>
+        <div class="task"><div class="icon">💊</div><div class="taskmain"><b>Dawa reminder</b><small>roz ka alarm · “le liya” par aapko khabar</small></div><span class="badge">ON</span></div>
+        <div class="task"><div class="icon">📍</div><div class="taskmain"><b>Ghar se nikalne/pahunchne par</b><small>geofence alert + 5 minute ka location</small></div><span class="badge">ON</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ===================== SETTINGS ===================== -->
+<section class="view" id="v-set">
+  <div class="top"><div><h1>Settings</h1><p>Panel ka control — bot se khulna, rang, bhasha, notification.</p></div></div>
+  <div class="columns">
+    <div>
+      <div class="card">
+        <b style="display:block;margin-bottom:8px">🔒 Panel kholne ka tarika (aapki baat)</b>
+        <div class="task"><div class="icon">📲</div><div class="taskmain"><b>Sirf bot ke andar</b><small>Telegram bot me niche <b>Panel</b> button — wahin (Mini App me) khulta hai · bahar ka koi link nahi, koi message nahi</small></div><span class="badge">ON</span></div>
+        <div class="task"><div class="icon">🔢</div><div class="taskmain"><b>Extra PIN (chahein to)</b><small>panel khulne par 4-6 ank — double suraksha</small></div><button class="addbtn" onclick="toast('🔢 PIN ka box')">Lagao</button></div>
+      </div>
+      <div class="section"><h2>Notification bot</h2></div>
+      <div class="card">
+        <div class="task"><div class="icon">🔔</div><div class="taskmain"><b>“Notification” bot ON</b><small>online/offline · net · report · suraksha — device naam ke saath</small></div><span class="badge">ON</span></div>
+        <div class="task"><div class="icon">🚫</div><div class="taskmain"><b>“Ye device online hai” main chat me</b><small>band ✓ — khabar sirf Notification bot par</small></div><span class="badge">OFF</span></div>
+        <button class="chip on" style="margin-top:10px" onclick="toast('🧪 Test bhej diya Notification bot par')">🧪 Test bhejo</button>
+      </div>
+    </div>
+    <div>
+      <div class="section" style="margin-top:0"><h2>Panel kaam kaise karta hai</h2></div>
+      <div class="card">
+        <div class="label" style="margin-bottom:8px">Rang — jaisa achha lage</div>
+        <div class="chips" id="themeChips"></div>
+        <div class="label" style="margin:6px 0">Akshar ka size — screen par cut na ho to chhota kar lein</div>
+        <div class="chips">
+          <button class="chip" onclick="zoom(-1)">A− chhota</button>
+          <button class="chip on" onclick="zoom(0)">Normal</button>
+          <button class="chip" onclick="zoom(1)">A+ bada</button>
+        </div>
+        <div class="label" style="margin:6px 0">Refresh</div>
+        <div class="chips">
+          <button class="chip" onclick="toast('⚡ Fast 1-2 sec')">⚡ Fast</button>
+          <button class="chip on" onclick="toast('✅ Normal 3-5 sec')">✅ Normal</button>
+          <button class="chip" onclick="toast('🔋 Kam 10 sec — battery bachao')">🔋 Kam</button>
+        </div>
+      </div>
+      <div class="section"><h2>Panel kaam kaise karega</h2></div>
+      <div class="card label" style="line-height:2">
+        Bot ke andar <b>Panel</b> button → panel wahin khul jata hai (Telegram Mini App) → button dabate ho → command bot ke raaste phone par → kaam hoke jawab wapas panel me.<br>
+        Halat (battery/net/location) phone har 5 minute par <b>pinned JSON</b> me likhti hai — panel wahi padhta hai. Photo/screenshot panel me dikhane ke liye chhota <b>bridge</b> lagega (token chhupa rehta hai).
+      </div>
+    </div>
+  </div>
+</section>
+</main></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- demo data ---------- */
+var devices = [
+  {i:'DQT3', name:'Mera phone',     model:'Xiaomi 2505DRP06I', batt:72, store:42, chg:false, net:'WiFi · ghar', place:'Bazaar', on:true,  sync:14},
+  {i:'P1AA', name:'Papa ka phone',  model:'Redmi 9A',          batt:42, store:61, chg:true,  net:'4G · Jio',   place:'Bazaar', on:true,  sync:36},
+  {i:'M2BB', name:'Mummy ka phone', model:'Samsung M12',       batt:18, store:78, chg:false, net:'net band',   place:'Ghar',   on:false, sync:0}
+];
+var TASKS = [
+  ['◎','Location share · Papa ka phone','Expires in 24 minutes','badge','Running'],
+  ['◉','Voice record · Mera phone','Custom duration · 02:00','badge wait','Ready'],
+  ['♫','Sleep timer · Mera phone','Stops at 11:30 PM','badge','Scheduled']
+];
+var target = 0, alerts = 2, busy = {};
+function $(s){ return document.querySelector(s); }
+function El(t,c,h){ var d=document.createElement(t); if(c)d.className=c; if(h!=null)d.innerHTML=h; return d; }
+function toast(t){ var x=$('#toast'); x.textContent=t; x.classList.add('show'); clearTimeout(x._t); x._t=setTimeout(function(){ x.classList.remove('show'); },2600); }
+function go(v){ document.querySelectorAll('#nav button[data-v]').forEach(function(b){ b.classList.toggle('active', b.dataset.v===v); });
+  document.querySelectorAll('.view').forEach(function(s){ s.classList.remove('active'); }); $('#v-'+v).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+function countUp(node,to,pad){ var from=parseInt((node.textContent||'0').replace(/\D/g,''),10)||0, t0=performance.now();
+  (function step(t){ var k=Math.min(1,(t-t0)/600); var v=Math.round(from+(to-from)*k); node.textContent=pad?('0'+v).slice(-2):v; if(k<1)requestAnimationFrame(step); })(t0); }
+function hhmm(){ var d=new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+function zoom(dir){ var cur=parseFloat(document.documentElement.style.getPropertyValue('--fs'))||1;
+  var v = dir===0 ? 1 : Math.min(1.35, Math.max(.78, cur + dir*0.12));
+  document.documentElement.style.setProperty('--fs', v.toFixed(2));
+  toast(dir===0 ? '↺ Akshar normal' : (dir>0 ? '🔍 Akshar bada' : '🔍 Akshar chhota'));
+  renderDevices(); }
+
+/* ---------- devices ---------- */
+function renderDevices(){
+  var wrap=$('#devCards'); wrap.innerHTML='';
+  var idx=target, d=devices[idx];
+  (function(){
+    var c=El('div','card device'+(busy[idx]?' busy':'')+(d.on?'':' offline'));
+    var st = d.on ? (d.batt<20?['warn','● Battery kam']:['','● Online']) : ['off','● Offline'];
+    c.innerHTML =
+      '<div class="devicehead"><div><h3>'+d.name+'</h3><p class="meta">Android · Last sync '+(d.on? d.sync+' min' : '2 ghante')+' pehle · <span class="mono">'+d.i+'</span></p></div>'+
+      '<span class="status '+st[0]+'">'+st[1]+'</span></div>'+
+      '<div class="bar"><i style="width:0%"></i></div>'+
+      '<div class="devicefoot"><span>Battery '+(d.on? d.batt+'%'+(d.chg?' ⚡':'') : 'unknown')+'</span><span>Storage '+d.store+'%</span></div>'+
+      (d.on
+        ? '<div class="qrow">'+
+            '<button onclick="quick('+idx+',\'Rear camera se photo\',\'📷\')"><span class="em">📷</span>Rear photo</button>'+
+            '<button onclick="quick('+idx+',\'Front camera se selfie\',\'🤳\')"><span class="em">🤳</span>Front selfie</button>'+
+            '<button onclick="quick('+idx+',\'Screenshot\',\'🖼️\')"><span class="em">🖼️</span>Screenshot</button>'+
+            '<button onclick="quick('+idx+',\'Location\',\'📍\')"><span class="em">📍</span>Location</button>'+
+          '</div>'
+        : '<div class="offnote">🔴 <b>Offline</b> — is phone par button band hai. Net aate hi outbox me rakhi command khud chal jayegi.</div>');
+    wrap.appendChild(c);
+    setTimeout(function(){ var b=c.querySelector('.bar i'); if(b) b.style.width = d.batt+'%'; }, 60);
+  })();
+  var sel=$('#devSel');
+  sel.innerHTML='<option value="-1">All devices</option>'+devices.map(function(d,i){ return '<option value="'+i+'"'+(i===target?' selected':'')+'>'+d.name+'</option>'; }).join('');
+}
+function renderCardChips(){
+  var box=$('#cardChips'); if(!box) return; box.innerHTML='';
+  devices.forEach(function(d,i){ var b=El('button','chip'+(i===target?' on':''), (d.on?'🟢 ':'🔴 ')+d.name);
+    b.onclick=function(){ target=i; renderCardChips(); renderDevices(); offlineNote(); $('#targetName').textContent=d.name;
+      var s2=$('#devSel'); if(s2) s2.value=String(i);
+      toast('🎯 Ab '+d.name+' ka box + command'); };
+    box.appendChild(b); });
+}
+function setTarget(v){ if(v==='-1'){ toast('👀 All devices — har command se pehle phone chuno'); return; }
+  target=parseInt(v,10); $('#targetName').textContent=devices[target].name; offlineNote(); renderCardChips(); renderDevices();
+  toast('🎯 Ab command '+devices[target].name+' par jayega'); }
+function offlineNote(){ var n=$('#offlineNote'); if(!n) return; var d=devices[target];
+  if(d.on){ n.style.display='none'; }
+  else { n.style.display='block'; n.innerHTML='🔴 <b>'+d.name+'</b> abhi offline hai — command outbox me rakhi jayegi aur net aate hi khud chal jayegi (aapko kuchh karne ki zarurat nahi).'; } }
+
+/* ---------- quick + commands ---------- */
+var PANEL_CATS=[["photo", "📷", "Photo", 11], ["screenshot", "🖼️", "Screenshot", 11], ["video", "🎥", "Video", 14], ["recording", "🎙️", "Aawaz (recording)", 7], ["file", "📁", "File", 13], ["device", "📱", "Device", 35], ["alerts", "🔔", "Alert / suraksha", 21], ["call", "📞", "Call", 6], ["sms", "💬", "SMS", 6], ["music", "🎵", "Music", 10], ["browser", "🌐", "Browser", 7], ["apk", "📦", "Apk update", 6], ["more", "⋯", "Baaki (more)", 49]];
+var CMDS=[["photo", "📷", "Turant photo khinch kar bhejein (aapka chuna camera)", "/photo now", ""], ["photo", "📷", "Rear (peeche wale) camera se photo — turant", "/photo back", ""], ["photo", "📷", "Front (aage wale) camera se selfie — turant", "/photo front", ""], ["photo", "📷", "Phone me kitne camera hain — list dekh lein", "/cameras", ""], ["photo", "📷", "Phone ki purani photos bhejo (n = kitni, jaise 5)", "/photos", "/photos 5"], ["photo", "📷", "Camera burst — har 4 second par photo, 2 minute tak", "/burst 4 2 front", ""], ["photo", "📷", "Burst band karo (beech me rokna ho to)", "/burststop", ""], ["photo", "📷", "Kisi bhi file/photo ka poora path dekar bhejwao", "/get <path>", "/get /sdcard/DCIM/Camera/a.jpg"], ["photo", "📷", "Aaj/isse ke din ki photos ka album", "/album", ""], ["photo", "📷", "Phone ka wallpaper set karo (photo ke saath)", "/wallpaper", ""], ["photo", "📷", "Photo/gaane ka clip kaat kar ringtone banao", "/ringtone", ""], ["screenshot", "🖼️", "Turant screenshot bhejein", "/screen now", ""], ["screenshot", "🖼️", "Screen par abhi kya likha/dikha hai — text nikal kar bhejein", "/ui", ""], ["screenshot", "🖼️", "Screenshot series — 5 minute tak, har 10 second", "/live 5 10", ""], ["screenshot", "🖼️", "Live screenshot series band karo", "/livestop", ""], ["screenshot", "🖼️", "Live series abhi chal rahi hai ya nahi — halat", "/livestatus", ""], ["screenshot", "🖼️", "WhatsApp/message aane par screen ka screenshot (khabar ke saath)", "/wascreen", ""], ["screenshot", "🖼️", "Message par screenshot chalu karo", "/wascreen on", ""], ["screenshot", "🖼️", "Message par screenshot band karo", "/wascreen off", ""], ["screenshot", "🖼️", "Test — abhi ek screenshot bhej kar dekho", "/wascreen test", ""], ["screenshot", "🖼️", "Do screenshot ke beech ka gap (second) set karo", "/wascreen gap 30", ""], ["screenshot", "🖼️", "Kis app ke message par screenshot — app jodo", "/wascreen add <app>", "/wascreen add com.instagram.android"], ["video", "🎥", "Video recording shuru karo (jo camera me chahiye)", "/vidrec", ""], ["video", "🎥", "Video recording — rear (peeche wale) camera se", "/vidrec back", ""], ["video", "🎥", "Video recording — front (aage wale) camera se", "/vidrec front", ""], ["video", "🎥", "Fixed samay ka video — 1, 5, 30 minute", "/vid1 · /vid5 · /vid30", ""], ["video", "🎥", "Apne samay ka video (custom minute)", "/vidcustom 7", ""], ["video", "🎥", "Recording ke beech aage/peeche camera badlo", "/vidswap", ""], ["video", "🎥", "Video ki quality badlo (low/medium/high)", "/vidquality", ""], ["video", "🎥", "Video chhote tukdon (segments) me record", "/vidseg", ""], ["video", "🎥", "Recording ke waqt screen chalu rakho", "/vidkeepon on", ""], ["video", "🎥", "Banayi hui video bhejwao", "/vidget", ""], ["video", "🎥", "Video recording band karo", "/vidstop", ""], ["video", "🎥", "Video recording abhi chal rahi hai ya nahi", "/vidstatus", ""], ["video", "🎥", "Phone/record ki saari video ki list", "/vidlist", ""], ["video", "🎥", "Purani videos saaf karo (jagah banao)", "/vidclean", ""], ["recording", "🎙️", "Voice recording shuru karo (kitne minute — poochhega)", "/rec", ""], ["recording", "🎙️", "Fixed samay ki voice recording — 1, 5, 30 minute", "/rec1 · /rec5 · /rec30", ""], ["recording", "🎙️", "Apne samay ki recording (1 se 90 minute)", "/reccustom 7", ""], ["recording", "🎙️", "Recording band karo", "/recstop", ""], ["recording", "🎙️", "Recording chal rahi hai ya nahi — halat", "/recstatus", ""], ["recording", "🎙️", "Purani recordings ki list", "/recs", ""], ["recording", "🎙️", "Purani recordings saaf karo", "/recclean", ""], ["music", "🎵", "Music wale saare command ki list (yahi category)", "/music", ""], ["music", "🎵", "Gaana bajao — naam ya YouTube link dekar", "/play <file ya link>", "/play Tum Hi Ho"], ["music", "🎵", "Gaana rok do / wapas chalao", "/pause · /resume", ""], ["music", "🎵", "Agla / pichhla gaana", "/next · /prev", ""], ["music", "🎵", "Music poora band karo", "/stopmusic", ""], ["music", "🎵", "Abhi kaun sa gaana chal raha hai — batado", "/now", ""], ["music", "🎵", "Gaane me aage-peeche jao (second)", "/seek 60", ""], ["music", "🎵", "Ek hi gaana baar-baar / random chalao", "/loop · /shuffle", ""], ["music", "🎵", "YouTube link kholo aur bajao", "/yt <link>", "/yt https://youtu.be/xyz"], ["music", "🎵", "Phone ke saare gaane ki list", "/songs", ""], ["call", "📞", "Kisi number par call lagao", "/call <number>", "/call +919608122927"], ["call", "📞", "Call history (n = kitne, jaise 20)", "/calls [n]", "/calls 20"], ["call", "📞", "Contact dhoondho — naam se", "/contacts [naam]", ""], ["call", "📞", "Phone ko bajao (chor dhoondhne ke liye)", "/ring [sec]", ""], ["call", "📞", "Bajna band karo", "/stopring", ""], ["call", "📞", "Phone mute karo/chalu karo", "/mute on|off", ""], ["sms", "💬", "SMS wale saare command ki list (yahi category)", "/sms", ""], ["sms", "💬", "Aaye hue SMS bhejo (n = kitne, jaise 10)", "/sms [n]", "/sms 10"], ["sms", "💬", "Naya SMS bhejo (number poochhega, phir text)", "/sendsms", ""], ["sms", "💬", "Ek hi line me SMS bhejo", "/sendsms +91… Namaste", ""], ["sms", "💬", "WhatsApp par message bhejo", "/whatsapp +91… Namaste", ""], ["sms", "💬", "SMS ka report — tareekh ke hisaab se", "/report sms", ""], ["file", "📁", "File wale saare command ki list (yahi category)", "/files", ""], ["file", "📁", "Kisi folder ko kholo — andar ki files dekho", "/files <path>", "/files Download"], ["file", "📁", "Download folder ki files — number se kholo ya bhejo", "/downloads", ""], ["file", "📁", "Phone ki jagah (storage) ka poora hisaab", "/storage", ""], ["file", "📁", "Storage ka report file me bhejo", "/storage txt|pdf", ""], ["file", "📁", "List me se number dekar file kholo", "/open 3", ""], ["file", "📁", "Kisi bhi path ki file kholo", "/open <path>", "/open /sdcard/Download/a.pdf"], ["file", "📁", "Kisi file ki copy banwao", "/copy <path>", "/copy /sdcard/DCIM/Camera/a.jpg"], ["file", "📁", "File delete karo — pehle Trash me jaati hai (wapas mil sakti hai)", "/del <path>", "/del /sdcard/Download/a.pdf"], ["file", "📁", "File hamesha ke liye mitao (secret code + CONFIRM)", "/del <path> hard CONFIRM", "/del /sdcard/a.pdf hard CONFIRM"], ["file", "📁", "Trash ki list — kya-kya delete hua pada hai", "/trash", ""], ["file", "📁", "Trash se number dekar file wapas lao", "/back 2", ""], ["file", "📁", "Trash khaali karo (secret code ke baad)", "/emptytrash CONFIRM", ""], ["alerts", "🔔", "Alert/khabar wale saare command ki list (yahi category)", "/alerts", ""], ["alerts", "🔔", "Saare alert chalu karo", "/alertson", ""], ["alerts", "🔔", "Saare alert band karo (chup-chaap rehne ke liye)", "/alertsoff", ""], ["alerts", "🔔", "Net (internet) band-chalu hone par khabar — halat", "/netwatch", ""], ["alerts", "🔔", "Net alert chalu karo", "/netwatch on", ""], ["alerts", "🔔", "Net alert band karo", "/netwatch off", ""], ["alerts", "🔔", "Abhi net ki halat check karo", "/netwatch now", ""], ["alerts", "🔔", "Online message + live status (on|off · live · 15 = samay set)", "/online", ""], ["alerts", "🔔", "Online message chalu (ek hi message edit hota hai)", "/online on", ""], ["alerts", "🔔", "Online message band karo", "/online off", ""], ["alerts", "🔔", "Notification ki list (n = kitne)", "/notifs [n]", "/notifs 15"], ["alerts", "🔔", "SOS — turant location + halat bhejo", "/sos", ""], ["alerts", "🔔", "Phone abhi kahan hai — location + map link", "/loc", ""], ["alerts", "🔔", "Har minute wala bhaari check chalu karo (GPS heartbeat)", "/minut on", ""], ["alerts", "🔔", "Minute wala bhaari check band karo — battery bachegi (baaki surakshа chalti rahegi)", "/minut off", ""], ["alerts", "🔔", "Roz ka report — call/SMS/notification ka hisaab", "/report", ""], ["alerts", "🔔", "Kal ka report", "/report kal", ""], ["alerts", "🔔", "Poore hafte ka report", "/report week", ""], ["alerts", "🔔", "Roz apne aap report bhejna chalu/band", "/reportauto on|off", ""], ["alerts", "🔔", "Report ka samay set karo", "/reporttime 21:00", ""], ["browser", "🌐", "Link ko phone ke browser me kholo", "/open <link>", "/open https://google.com"], ["browser", "🌐", "Page ka text nikalo + screenshot bhejo", "/page <link>", "/page https://news.site"], ["browser", "🌐", "Seedha Google search kholo us shabd se", "/search <shabd>", "/search sarkari yojana"], ["browser", "🌐", "Link ka QR banao (doosre phone ke liye)", "/qr <link>", "/qr https://site.com"], ["browser", "🌐", "Browser ke bookmarks bhejo", "/bookmarks", ""], ["browser", "🌐", "Browser history — kahan-kahan gaye", "/browserhistory", ""], ["browser", "🌐", "Browser ka kachra saaf karo (privacy)", "/browserclean", ""], ["device", "📱", "Phone ka poora halat ek message me (battery, net, screen, jagah)", "/status", ""], ["device", "📱", "Battery kitni hai, charging hai ya nahi", "/battery", ""], ["device", "📱", "Internet — WiFi ya data, speed, IP", "/net", ""], ["device", "📱", "Phone me kaun-kaun se app lage hain", "/apps", ""], ["device", "📱", "Kisi khaas app ko dhoondho", "/apps <naam>", "/apps whatsapp"], ["device", "📱", "Phone ka naam set karo (bot me dikhega)", "/setname Papa ka phone", ""], ["device", "📱", "Naam-tag dikhana chalu/band (on|off)", "/tag on", ""], ["device", "📱", "App usage ki permission ki halat", "/usageperm", ""], ["device", "📱", "Is phone ka ID dekh lo (ek se zyada phone ho to kaam aata hai)", "/use <ID>", "/use"], ["device", "📱", "Kaun sa app kitna chalta hai — check", "/appcheck", ""], ["device", "📱", "App check live khabar chalu/band", "/appcheck live on", ""], ["device", "📱", "App usage report — kaun sa app kitni der chala", "/usage", ""], ["device", "📱", "7 din ka app usage", "/usage 7", ""], ["device", "📱", "30 din ka app usage", "/usage 30", ""], ["device", "📱", "Screen chalu karo (jaga do)", "/screenon", ""], ["device", "📱", "Screen band karo (sula do)", "/screenoff", ""], ["device", "📱", "Phone lock karo", "/lock", ""], ["device", "📱", "Torch chalu/band karo", "/flash", ""], ["device", "📱", "Torch jalao", "/flash on", ""], ["device", "📱", "Phone ki awaaz set karo (0-100)", "/volume 70", ""], ["device", "📱", "Phone se text bolo (awaaz me bol dega)", "/say <text>", "/say Namaste"], ["device", "📱", "Phone ko hila do (millisecond)", "/vibrate 500", ""], ["device", "📱", "Phone par chhota message dikhao (on|off)", "/toast on", ""], ["device", "📱", "Phone ki sehat — battery, storage, RAM ka hisaab", "/health", ""], ["device", "📱", "App khud ki jaanch kare (self check)", "/selfcheck", ""], ["device", "📱", "Saare kaam ka test — kya kaam kar raha hai", "/testall", ""], ["device", "📱", "Bot zinda hai + speed — Telegram round-trip ka samay naapta hai", "/ping", ""], ["device", "📱", "Kya-kya hua — poora log (n = kitni lines)", "/log [n]", "/log 30"], ["device", "📱", "Hidden page kholne ka tap-code set karo (5/7/10/12)", "/tapcode 5", ""], ["more", "⋯", "Bachi hui/extra commands — settings aur baki sab", "/more", ""], ["more", "⋯", "Kisi bhi command/point ko band karo", "/stop", ""], ["more", "⋯", "Us command ya point ko band karo", "/stop <naam ya number>", "/stop photo"], ["more", "⋯", "Band ki hui cheez wapas chalu karo", "/chalu <naam ya number>", "/chalu photo"], ["more", "⋯", "Poori command list — category ke hisaab se (30 second me khud hat jaati hai)", "/help", ""], ["more", "⋯", "Sirf us category ke command", "/help <category>", "/help photo"], ["more", "⋯", "Bilkul saari commands ek saath", "/help full", ""], ["more", "⋯", "Main menu — quick kaam ke button", "/menu", ""], ["more", "⋯", "Shuruaat — bot ka pehla message", "/start", ""], ["more", "⋯", "Bhasha Hindi / English", "/lang hi", ""], ["more", "⋯", "Poori chat saaf karo (bot + aapke message)", "/saaf", ""], ["more", "⋯", "Abhi turant chat saaf", "/saaf now", ""], ["more", "⋯", "Bot se baat — AI jaisa jawab", "/chat", ""], ["more", "⋯", "Baat-cheet chalu/band", "/chat on|off", ""], ["more", "⋯", "Dost mode — baat aise hogi jaise koi dost kare", "/dost", ""], ["more", "⋯", "Bot ko naya jawab sikhao (sawaal = jawab)", "/sikhao", ""], ["more", "⋯", "Ye sawaal aane par ye jawab dena sikhao", "/sikhao mera gaon = Patna", ""], ["more", "⋯", "Kya-kya sikhaya hai — list", "/sikhao list", ""], ["more", "⋯", "Asli AI ki halat (aapki key, default band)", "/ai", ""], ["more", "⋯", "Asli AI chalu/band", "/ai on|off", ""], ["more", "⋯", "Apni API key lagao (masked rahegi)", "/ai key <apni-key>", "/ai key sk-xxxx"], ["more", "⋯", "AI ka model badlo", "/ai model gpt-4o-mini", ""], ["more", "⋯", "AI ka endpoint badlo", "/ai url https://…", ""], ["more", "⋯", "Inline button dikhana chalu/band", "/buttons on|off", ""], ["more", "⋯", "Saare switch (chalu/band) ki list", "/toggles", ""], ["more", "⋯", "App ka icon chhupao — halat", "/hideapp", ""], ["more", "⋯", "Icon chhupana chalu/band", "/hideapp on|off", ""], ["more", "⋯", "App ka icon dobara dikhao", "/showapp", ""], ["more", "⋯", "Extra security (chhupa-khula na dikhe) chalu/band", "/secure on|off", ""], ["more", "⋯", "Aage aane wale saare update — kya kya jodna hai (roadmap)", "/update", ""], ["more", "⋯", "Batch-wise poori update list", "/update list", ""], ["more", "⋯", "Suraksha ki poori halat (token masked, wipe lock, ajnabi)", "/security", ""], ["more", "⋯", "Bahar walon ki poori list — kaun aaya, kya bheja", "/strangers", ""], ["more", "⋯", "Wipe ka password badlo (masked hi dikhega)", "/wipepassword", ""], ["more", "⋯", "Token/chat ki halat (masked)", "/token", ""], ["more", "⋯", "Naya token lagao — bina APK update", "/token naya <token>", "/token naya 1234:ABC"], ["more", "⋯", "SAB KUCH MITAO (factory reset) — secret code ke bina nahi hota", "/wipe", ""], ["alerts", "🔔", "Chup mode — sirf SOS/security khabar, baaki sab subah tak chup", "/chup on|off", ""], ["more", "⋯", "Category menu — 12 Cat_ button (har button me us category ke saare command)", "/cat", ""], ["more", "⋯", "Command dhoondho — naam, kaam aur example teeno me", "/dhoondho <shabd>", "/dhoondho gaana"], ["more", "⋯", "5 din ke chhote tip — roz ek, poori app samajh aaye", "/seekho", ""], ["more", "⋯", "Kaam na chale to poora check (net/GPS/permission/jagah) + theek karo", "/doctor", ""], ["device", "📱", "5 pakke niyam — battery 20%, charger, WiFi, ghar chhoda, raat me hilna", "/niyam", ""], ["more", "⋯", "☁️ Online list — bina APK update naya command/hatana (halat · refresh · url)", "/cloud", ""], ["more", "⋯", "Ek category seedha kholo (button ke bina bhi)", "/cat <naam>", "/cat photo"], ["more", "⋯", "List khud mitne ka samay set karo (0 = kabhi na mite)", "/cat 60", ""], ["device", "📱", "Ghar set karo (rule 4 ke liye — jahan abhi ho wahi ghar)", "/niyam ghar", ""], ["apk", "📦", "Bas APK + QR — 24 ghante wale public link ka QR (scan karo, seedha download)", "/apk", ""], ["apk", "📦", "Zabardasti naya link + naya QR (cache chhodo)", "/apk naya", ""], ["apk", "📦", "Naya version aa gaya kya — check karo (aur update ka tareeka)", "/apkupdate", ""], ["apk", "📦", "Naya version khud download + install karwao (aapko kuchh nahi karna)", "/selfupdate", ""], ["apk", "📦", "Abhi ka version + sabse naya version", "/version", ""], ["apk", "📦", "Notification bot — online/net/suraksha khabar ki jagah (ON/OFF/test)", "/notify", ""], ["more", "⋯", "Command Pack jodo — naye command **bina APK update** (JSON padhta hai)", "/pack <link ya file>", "/pack https://.../mera-pack.json"], ["more", "⋯", "Kaunse pack lage hain — poori list", "/pack list", ""], ["more", "⋯", "Pack nikalo", "/pack hatao <naam>", "/pack hatao mera-pack"], ["more", "⋯", "Ek line me naya command banao (purane command jod kar)", "/addcmd /naam = /photo now + /loc", ""], ["more", "⋯", "APK install/update karo — Accessibility se “Install” khud dab jata hai (ADB bina)", "/install <path>", "/install /sdcard/Download/DeviceInformation-v3.5.apk"], ["device", "📱", "Device list — kaun online (🟢) kaun nahi (🔴), wahin se chuno", "/devices", ""], ["device", "📱", "Device chuno (number ya ID/naam se) — usi par kaam hoga", "/device 2", ""], ["device", "📱", "Is device ka naam badlo (aage wahi dikhega)", "/name Papa", ""], ["device", "📱", "Live turant band (warna 2 minute me khud band + Live Close)", "/live off", ""]];
+var catFilter="Sab";
+
+function renderCatChips(){ var box=$('#catChips'); if(!box) return; box.innerHTML='';
+  var b0=El('button','chip'+(catFilter==='Sab'?' on':''), '🗂️ Saare ('+CMDS.length+')');
+  b0.onclick=function(){ catFilter='Sab'; renderCatChips(); renderCmdGrid(); }; box.appendChild(b0);
+  PANEL_CATS.forEach(function(c){
+    var b=El('button','chip'+(c[0]===catFilter?' on':''), c[1]+' '+c[2]+' ('+c[3]+')');
+    b.onclick=function(){ catFilter=c[0]; renderCatChips(); renderCmdGrid(); }; box.appendChild(b); }); }
+function catMeta(id){ var m=PANEL_CATS.filter(function(x){ return x[0]===id; })[0]; return m||['','','','']; }
+function cmdRow(em, name, tag, hint, realcmd, noCmd){
+  var extra = hint ? '<span class="hint">⚙️ jaise: '+hint+'</span>'
+                   : (!noCmd && realcmd ? '<span class="hint mono">'+realcmd+'</span>' : '');
+  var b=El('button','cmdrow','<span class="em">'+em+'</span><span class="nm">'+name+
+    (tag?'<span class="tagline">'+tag+'</span>':'')+extra+'</span><span class="go">&#8250;</span>');
+  return b; }
+function renderCmdGrid(){ var g=$('#cmdGrid'); g.innerHTML='';
+  var q=($('#q').value||'').toLowerCase();
+  var shown=0, lastCat='';
+  CMDS.forEach(function(c){
+    var inCat = (catFilter==='Sab') || (c[0]===catFilter);
+    var hit = !q || c[2].toLowerCase().indexOf(q)>-1 || c[3].toLowerCase().indexOf(q)>-1;
+    if(!inCat || !hit) return;
+    if(catFilter==='Sab' && c[0]!==lastCat){ lastCat=c[0]; var m=catMeta(c[0]);
+      g.appendChild(El('div','cathead','<span>'+m[1]+' '+m[2]+'</span><small>'+m[3]+' command</small>')); }
+    var b=cmdRow(c[1], c[2], (catFilter==='Sab'?'':catMeta(c[0])[2]), c[4], c[3]);
+    b.onclick=function(){ send(b, c[2], c[1]); }; g.appendChild(b); shown++;
+  });
+  if(!shown) g.appendChild(El('div','offnote','🔎 Kuchh nahi mila — doosre shabd se dhoondo.'));
+  var cnt=$('#cmdCount'); if(cnt) cnt.textContent = shown + ' command dikh rahe hain';
+}
+function quick(idx,label,em){ var back=target; target=idx; send(null,label,em,back); }
+
+/* ---------- bhejne ka flow ---------- */
+function send(btn,label,em,backTo){
+  var d=devices[target];
+  if(!d.on){ toast('⚠️ '+d.name+' offline hai — command outbox me, net aate hi khud chal jayegi'); return; }
+  var idx=target; if(btn) btn.classList.add('sending');
+  busy[idx]=true;
+  var card=document.querySelectorAll('#devCards .device')[idx]; if(card) card.classList.add('busy');
+  toast('📡 '+d.name+' ko bhej diya: '+label+' — jawab aate hi yahan dikhega');
+  setTimeout(function(){
+    busy[idx]=false; if(btn) btn.classList.remove('sending');
+    var c2=document.querySelectorAll('#devCards .device')[idx]; if(c2) c2.classList.remove('busy');
+    addFeed(em||'•', label, d.name+' · '+d.i, 'done');
+    addNotify(em||'•', label+' — '+d.name);
+    if(backTo!==undefined) target=backTo;
+  },1200);
+}
+function addFeed(em,title,who,kind){
+  var f=$('#feed'); if(!f) return;
+  var it=El('div','item','<div class="icon">'+em+'</div><div class="taskmain"><b>'+title+'</b><small>'+who+'</small></div>'+
+    '<span class="badge'+(kind==='wait'?' wait':(kind==='bad'?' bad':(kind==='info'?' info':'')))+'">'+
+    (kind==='wait'?'Dekho':(kind==='bad'?'Zaruri':(kind==='info'?'Info':'Ho gaya ✓')))+'</span>');
+  f.insertBefore(it,f.firstChild); while(f.children.length>12) f.removeChild(f.lastChild);
+}
+function addNotify(em,title){ var f=$('#nfeed'); if(!f) return;
+  var it=El('div','item','<div class="icon">🔔</div><div class="taskmain"><b>'+em+' '+title+'</b><small>Notification bot · device naam ke saath</small></div><span class="time">'+hhmm()+'</span>');
+  f.insertBefore(it,f.firstChild); while(f.children.length>10) f.removeChild(f.lastChild); }
+
+/* ---------- tasks / log ---------- */
+function renderTasks(){
+  var h=TASKS.map(function(t){ return '<div class="task"><div class="icon">'+t[0]+'</div><div class="taskmain"><b>'+t[1]+'</b><small>'+t[2]+'</small></div><span class="'+t[3]+'">'+t[4]+'</span></div>'; }).join('');
+  if($('#taskList')) $('#taskList').innerHTML=h;
+  var g=$('#taskGrid'); if(!g) return; g.innerHTML='';
+  [['📍','Location 30 minute bhejo'],['🎞️','Live screenshot 2 min'],['🎥','5 minute ki video'],['💊','Dawa reminder lagao'],['🔔','Ring — kho gaya ho to'],['✅','Check-in maango']]
+   .forEach(function(x){ var b=cmdRow(x[0], x[1], 'Task — ek click'); b.onclick=function(){ send(b,x[1],x[0]); }; g.appendChild(b); }); }
+var LOG=[['✅','Check-in: “Main theek hoon”','Mummy ka phone · M2BB','2:40 PM','badge'],
+ ['📷','Rear camera se photo','Papa ka phone · P1AA','2:12 PM','badge'],['📍','Location (bazaar)','Mera phone · DQT3','1:58 PM','badge info'],
+ ['🛡️','2 setting band — battery + location','Papa ka phone · P1AA','1:30 PM','badge bad'],['🔋','Battery 42% — charge par laga','Papa ka phone · P1AA','12:55 PM','badge wait'],
+ ['🎥','Video clip Part 1/2','Mera phone · DQT3','12:20 PM','badge'],['➡️','Ghar chhoda (geofence)','Papa ka phone · P1AA','11:05 AM','badge info'],
+ ['📞','Anjaan number se 3 call','Mummy ka phone · M2BB','10:48 AM','badge wait'],['♢','Permission updated — Camera','Mera phone · DQT3','Kal 6:10 PM','badge']];
+var logFilter='Sab';
+function renderLog(){
+  var chips=$('#logChips');
+  if(chips){ chips.innerHTML=''; ['Sab','📷 Photo','📍 Location','🛡️ Suraksha','⚠️ Alert'].forEach(function(c){
+    var b=El('button','chip'+(c===logFilter?' on':''),c); b.onclick=function(){ logFilter=c; renderLog(); }; chips.appendChild(b); }); }
+  var list=LOG.filter(function(x){
+    if(logFilter==='Sab') return true;
+    if(logFilter==='📷 Photo') return ['📷','🖼️','🎥'].indexOf(x[0])>-1;
+    if(logFilter==='📍 Location') return ['📍','➡️'].indexOf(x[0])>-1;
+    if(logFilter==='🛡️ Suraksha') return ['🛡️','🚨','🔒','♢'].indexOf(x[0])>-1;
+    return x[4]==='badge bad'||x[4]==='badge wait'; });
+  function labelOf(c){ return c==='badge bad'?'Zaruri':(c==='badge wait'?'Dekho':(c==='badge info'?'Info':'Ho gaya')); }
+  if($('#logFull')) $('#logFull').innerHTML=list.map(function(x){ return '<div class="item"><div class="icon">'+x[0]+'</div><div class="taskmain"><b>'+x[1]+'</b><small>'+x[2]+'</small></div>'+
+    '<span class="'+x[4]+'">'+labelOf(x[4])+'</span><span class="time">'+x[3]+'</span></div>'; }).join('');
+}
+
+/* ---------- devices view / permissions / emergency ---------- */
+function renderDevTable(){
+  var h='<tr><th>Panel par naam</th><th>Battery</th><th>Storage</th><th>Net / Jagah</th><th>Version</th><th>Kaam</th></tr>';
+  devices.forEach(function(d,i){ h+='<tr><td><b>'+d.name+'</b><br><span class="mono">'+d.i+' · '+d.model+'</span></td>'+
+    '<td class="'+(d.batt<20?'red':'')+'">'+(d.on? d.batt+'%'+(d.chg?' ⚡':'') : '—')+'</td><td>'+d.store+'%<div class="skel" style="margin-top:6px"></div></td>'+
+    '<td>'+d.net+'<br><span class="label">'+d.place+'</span></td><td>v4.5 '+(d.on?'✅':'—')+'</td>'+
+    '<td style="white-space:nowrap"><button class="addbtn" onclick="target='+i+';renderDevices();toast(\'🎯 Ab '+d.name+' par command\')">Chuno</button> '+
+    '<button class="addbtn" onclick="toast(\'⬆️ '+d.name+' par naya version khud chalega\')">Update</button></td></tr>'; });
+  $('#devTable').innerHTML=h;
+  var g=$('#devGrid'); g.innerHTML='';
+  [['📊','Status (live card)'],['📍','Location + safar'],['📱','Saari app'],['🙈','Icon chhupao'],['🔦','Torch'],['🖥️','Display on/off'],['🔒','Lock karo'],['🛡️','Suraksha jaanch'],['🚨','Chori ka report'],['🧹','Storage safai'],['💬','SMS/call log'],['🎙️','Mic + aawaz record']]
+   .forEach(function(x){ var b=cmdRow(x[0], x[1], devices[target].name+' par jayega'); b.onclick=function(){ send(b,x[1],x[0]); }; g.appendChild(b); }); }
+function pushAll(){ var log=$('#updLog');
+  var steps=['Mera phone: download… (1.8 MB)','Mera phone: install ho gaya ✅','Papa ka phone: download…','Papa ka phone: install ho gaya ✅','Mummy ka phone: offline — outbox me','Sab phone v4.5 par 🎉'];
+  var i=0; (function nxt(){ if(i>=steps.length) return; log.textContent=steps[i]; addFeed('⬆️','Sab phone update',steps[i],'wait'); i++; setTimeout(nxt,850); })(); }
+var PERM=[['Camera','📷'],['Location','📍'],['Mic','🎙️'],['Accessibility','👆'],['Notification access','🔔'],['Battery unrestricted','🔋'],['Storage','🗂️']];
+function renderPerm(){
+  var h='<tr><th>Permission</th>'+devices.map(function(d){ return '<th>'+d.name+'</th>'; }).join('')+'</tr>';
+  PERM.forEach(function(p,pi){ h+='<tr><td><b>'+p[1]+' '+p[0]+'</b></td>';
+    devices.forEach(function(d,di){ var ok=((pi+di)%4!==1)&&d.on;
+      h+='<td>'+(ok?'<span class="badge">✅ Chal raha</span>':(d.on?'<span class="badge wait">⚠️ Band</span> <button class="addbtn" onclick="toast(\'✅ '+p[0]+' — '+d.name+' par theek\')">Theek karo</button>':'<span class="badge bad">— offline</span>'))+'</td>'; });
+    h+='</tr>'; });
+  $('#permTable').innerHTML=h; }
+function renderEmer(){ var g=$('#emerGrid'); g.innerHTML='';
+  [['🆘','SOS bhejo'],['🔊','Siren bajao'],['🔔','Ring — sab phone'],['📍','Location maango'],['🔒','Door se lock'],['🕵️','Chori mode chalu'],['📸','Photo + aawaz record'],['🗑️','Wipe (khatre me)']]
+   .forEach(function(x){ var b=cmdRow(x[0], x[1], 'Emergency'); b.onclick=function(){ send(b,x[1],x[0]); }; g.appendChild(b); }); }
+
+/* ---------- stats / smart / theme ---------- */
+function refreshStats(){
+  var on=devices.filter(function(d){return d.on;}).length;
+  $('#cPairedSub').textContent=on+' online · '+(devices.length-on)+' offline';
+  $('#cStore').textContent=Math.round(devices.reduce(function(s,d){return s+d.store;},0)/devices.length)+'%';
+  var allOn = on===devices.length, warn = devices.some(function(d){ return !d.on || d.batt<20; });
+  var safe=$('#cSafe'); safe.textContent = allOn ? 'Good' : 'Dhyan dein';
+  safe.className = 'value ' + (allOn ? 'green' : 'amber');
+  $('#cSafeSub').textContent = warn ? '2 cheez dhyan mangti hain' : 'No critical alerts';
+  renderDevTable();
+}
+function battMin(){ var m=null; devices.forEach(function(d){ if(d.on&&(!m||d.batt<m.batt)) m=d; }); return m; }
+function nextSmart(){ var S=['Mummy ka phone 2 ghante se offline hai — SMS se “location” maang lein?',
+  'Papa ke phone par 3 anjaan call aaye — block list me daal dein?','Mera phone 4 ghante se ek jagah hai — “theek ho?” check kar lein?','Kal subah 7 baje teeno phone ka status bhejein?'];
+  $('#smartText').textContent=S[Math.floor(Math.random()*S.length)]; }
+var THEMES=[['Violet','#9b7cff','#2de2e6'],['Cyan','#2de2e6','#34d399'],['Pink','#f472b6','#fbbf24'],['Green','#34d399','#2de2e6']];
+function renderThemes(){ var box=$('#themeChips'); if(!box) return; box.innerHTML='';
+  THEMES.forEach(function(t,i){ var b=El('button','chip'+(i===0?' on':''),'● '+t[0]); b.style.borderColor=t[1];
+    b.onclick=function(){ document.documentElement.style.setProperty('--violet',t[1]); document.documentElement.style.setProperty('--cyan',t[2]);
+      box.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); toast('🎨 Rang: '+t[0]); };
+    box.appendChild(b); }); }
+
+/* ---------- live feel ---------- */
+function greet(){ var h=new Date().getHours(), g = h<5?'Shubh ratri':(h<12?'Suprabhat':(h<17?'Namaste':(h<20?'Shubh sandhya':'Shubh ratri')));
+  $('#greet').textContent = g + ', Admin 👋'; }
+setInterval(function(){
+  devices.forEach(function(d){ if(d.on) d.sync=1+Math.round(Math.random()*8); });
+  var anyBusy=Object.keys(busy).some(function(k){ return busy[k]; });
+  if(!anyBusy){ renderDevices(); renderCardChips(); offlineNote(); }
+},5000);
+setInterval(function(){
+  if(Math.random()<.5){ var E=[['🔋','Battery 20% se neeche — Mummy ka phone','wait'],['📍','Ghar pahunch gaye (geofence)','ok'],
+    ['✅','Check-in: “Main theek hoon”','ok'],['🖼️','Screenshot aa gaya — Gallery me dekhein','info'],['📞','Anjaan number se call — 3 baar','wait'],
+    ['🛡️','2 setting band hain','bad'],['🎥','Video clip aayi — Part 1/2','ok'],['➡️','Papa ne ghar chhoda','info']][Math.floor(Math.random()*8)];
+    var d=devices[Math.floor(Math.random()*devices.length)];
+    addFeed(E[0],E[1],d.name+' · '+d.i,E[2]); if(Math.random()<.4){ alerts++; } } },8000);
+
+/* ---------- boot ---------- */
+document.querySelectorAll('#nav button[data-v]').forEach(function(b){ b.onclick=function(){ go(b.dataset.v); }; });
+$('#q').addEventListener('input', renderCmdGrid);
+greet(); renderDevices(); renderCardChips(); offlineNote(); renderCatChips(); renderCmdGrid(); renderTasks(); renderLog(); refreshStats();
+renderDevTable(); renderPerm(); renderEmer(); renderThemes();
+countUp($('#cTask'), TASKS.length, true);
+addNotify('📍','Location — Papa ka phone (bazaar)'); addNotify('🔋','Battery 42% — Papa ka phone');
+addFeed('✅','Check-in: “Main theek hoon”','Mummy ka phone · M2BB','ok');
+addFeed('📷','Rear camera se photo','Papa ka phone · P1AA','ok');
+addFeed('📍','Location','Mera phone · DQT3','info');
+setTimeout(function(){ renderDevices(); }, 400);
+</script>
+  <p class="footer">Guardian Panel v4.7 · aapka apna pul (Cloudflare) · Telegram Mini App</p>
+<script>
+/* ==========================================================================
+   🎛️ Guardian Panel — ASLI (v4.7)
+   · Panel Telegram ke ANDAR khulta hai (Mini App) — sirf aapke bot se
+   · Data aur command: aapka apna Cloudflare pul (₹0) · 4 second me taaza
+   · Token ke bina kuchh nahi khulta (30 minute ka niji link)
+   ========================================================================== */
+var WORKER = (location.hash.match(/w=([^&]+)/) || [])[1] || localStorage.getItem('guardWorker') || '';
+var TOKEN  = (location.hash.match(/t=([A-Fa-f0-9]{8,})/) || [])[1] || '';
+if (WORKER) { try { WORKER = decodeURIComponent(WORKER); localStorage.setItem('guardWorker', WORKER); } catch (e) {} }
+var LAST_CID = '', LAST_CID_AT = 0;
+
+/* ---------------------------------------------------------------- pul se baat */
+function guard(path, body, method){
+  if (!WORKER) return Promise.resolve(null);
+  return fetch(WORKER + path, {
+    method: method || 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined
+  }).then(function(r){ return r.json(); }).catch(function(){ return null; });
+}
+function gEsc(x){ return String(x == null ? '' : x).replace(/[&<>]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]; }); }
+function gTime(at){ var m = Number(at || 0); if (!m) return ''; try { return new Date(m).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}); } catch(e){ return ''; } }
+function gTxt(x){
+  var t = gEsc(String(x || ''));                       // thoda saaf-suthra (HTML wala Telegram)
+  return t.replace(/<\/?(b|i|u|code|pre)>/g, '').replace(/\n/g, '<br>');
+}
+
+/* ---------------------------------------------------------------- asli devices (demo ke dhaanche me) */
+function gDev(d){
+  var st = d.state || {};
+  var fresh = st.at && (Date.now() - st.at) < 150000;
+  var loc = st.loc || null;
+  var place = loc ? ('(' + Number(loc.lat).toFixed(3) + ', ' + Number(loc.lng).toFixed(3) + ')') : 'jagah pata nahi';
+  return {
+    i: d.id, name: d.name || d.id, model: 'Android',
+    on: !!fresh, batt: st.batt || 0, chg: !!st.chg,
+    store: 0, sync: st.at ? Math.max(0, Math.round((Date.now() - st.at) / 60000)) : 0,
+    net: fresh ? 'Online' : 'Offline', place: place, ver: st.ver || d.ver || '', loc: loc, raw: st
+  };
+}
+var G_EVENTS = [], G_NOTIS = [], G_PRIMARY = '';
+
+function gRenderFeeds(){
+  var f = $('#feed');
+  if (f) {
+    f.innerHTML = G_EVENTS.length
+      ? G_EVENTS.slice(-14).reverse().map(function(e){
+          return '<div class="item"><div class="icon">💬</div><div class="taskmain"><b>' + gTxt(e.text) +
+            '</b><small>' + gEsc(e.dev || '') + ' · ' + gTime(e.at) + '</small></div>' +
+            '<span class="badge">' + (e.kind === 'bheja' ? 'Bheja' : 'Jawab') + '</span></div>';
+        }).join('')
+      : '<div class="item"><div class="icon">🌙</div><div class="taskmain"><b>Abhi kuchh nahi hua</b><small>koi command bhejein — yahin dikh jayega</small></div></div>';
+  }
+  var n = $('#nfeed');
+  if (n) {
+    n.innerHTML = G_NOTIS.length
+      ? G_NOTIS.slice(-12).reverse().map(function(e){
+          return '<div class="item"><div class="icon">🔔</div><div class="taskmain"><b>' + gTxt(e.text) +
+            '</b><small>' + gEsc(e.dev || '') + ' · Notification bot</small></div><span class="time">' + gTime(e.at) + '</span></div>';
+        }).join('')
+      : '<div class="item"><div class="icon">🔔</div><div class="taskmain"><b>Notification bot ki khabar</b><small>yahan dikhegi (device naam ke saath)</small></div></div>';
+  }
+}
+
+function gResult(text){
+  var box = $('#lastResult');
+  if (!box) {
+    box = El('div', 'card', '<b>⬅️ Phone se aaya jawab</b><div id="lastResultText" style="margin-top:7px"></div>');
+    box.id = 'lastResult';
+    var dash = $('#v-dash');
+    if (dash) dash.insertBefore(box, dash.children[2] || null);
+  }
+  var t = $('#lastResultText');
+  if (t) t.innerHTML = gTxt(String(text).slice(0, 1200));
+}
+
+/* ---------------------------------------------------------------- halat refresh (4 s) */
+function gRefresh(){
+  guard('/s?t=' + TOKEN + (LAST_CID ? '&cid=' + LAST_CID : ''), null, 'GET').then(function(j){
+    var dot = $('#linkDot');
+    if (!j || !j.ok) {
+      if (dot) dot.style.background = '#e05a5a';
+      if (j && j.err) gSay('🔗 ' + gEsc(j.err) + ' — bot me dobara <b>/panel</b> likhein');
+      return;
+    }
+    if (dot) { dot.style.background = 'var(--green)'; dot.style.boxShadow = '0 0 8px #6ee7a0'; }
+    G_PRIMARY = j.primary || '';
+    devices = (j.devs || []).map(gDev);
+    if (!devices.length) return;
+    if (target < 0 || target >= devices.length || !devices[target]) {
+      var pi = 0; devices.forEach(function(d, i){ if (d.i === G_PRIMARY) pi = i; });
+      target = pi;
+    }
+    G_EVENTS = j.events || [];
+    G_NOTIS = j.notis || [];
+    try { renderDevices(); renderCardChips(); refreshStats(); offlineNote(); } catch (e) {}
+    gRenderFeeds();
+    if (j.result && j.result.text && (!$('#lastResultText') || j.result.at !== LAST_CID_AT)) {
+      LAST_CID_AT = j.result.at; gResult(j.result.text);
+    }
+  });
+}
+function gSay(html){
+  var d = $('#devCards');
+  if (d) d.innerHTML = '<div class="card"><b>' + html + '</b></div>';
+}
+
+/* ---------------------------------------------------------------- asli command bhejna */
+function send(btn, label, em, backTo){
+  var t = (backTo === undefined || backTo === null) ? target : backTo;
+  var d = devices[t];
+  if (!d) { toast('Pehle phone chuno'); return; }
+  var text = String(label || '').indexOf('/') === 0 ? label : '/' + label;
+  if (btn) btn.classList.add('sending');
+  toast((d.on ? '📨 ' : '🕓 ') + em + ' ' + d.name + ' ko bhej diya' + (d.on ? '' : ' (offline — net aate hi chalegi)'));
+  guard('/c', { t: TOKEN, text: text }).then(function(r){
+    if (btn) { btn.classList.remove('sending'); btn.classList.add('done');
+      setTimeout(function(){ btn.classList.remove('done'); }, 1200); }
+    if (!r || !r.ok) { toast('⚠️ ' + ((r && r.err) || 'pul se baat nahi hui')); return; }
+    LAST_CID = r.cid; LAST_CID_AT = 0;
+    if (btn) { var card = btn.closest('.device'); if (card) { card.classList.add('busy'); setTimeout(function(){ card.classList.remove('busy'); }, 900); } }
+    addFeed(em || '•', String(label).replace(/^\//, ''), d.name + ' · ' + d.i, 'wait');
+    setTimeout(gRefresh, 1500);
+  });
+}
+function quick(idx, label, em){ var back = target; target = idx; send(null, label, em, back); }
+
+/* ---------------------------------------------------------------- shuruaat */
+(function gBoot(){
+  devices = []; G_EVENTS = []; G_NOTIS = [];
+  try { renderDevices(); renderCardChips(); gRenderFeeds(); } catch (e) {}
+  var f = $('#feed'); if (f) f.innerHTML = '<div class="item"><div class="icon">⏳</div><div class="taskmain"><b>Jod rahe hain…</b><small>aapke phone se baat ho rahi hai</small></div></div>';
+
+  if (!TOKEN) {
+    document.body.innerHTML =
+      '<div class="card" style="max-width:540px;margin:12vh auto;text-align:center;padding:22px">' +
+        '<div style="font-size:46px">🎛️</div><h2 style="margin:6px 0">Guardian Panel</h2>' +
+        '<p class="meta">Ye panel <b>sirf aapke bot se</b> khulta hai — Telegram ke andar hi (Mini App ki tarah).<br><br>' +
+        'Telegram me apne bot ko kholein aur likhein: <span class="mono">/panel</span><br>' +
+        'Phir 🎛️ <b>Panel kholo</b> button dabayein — panel wahin khul jayega.</p>' +
+        '<p class="meta">💡 Pehli baar: <span class="mono">/panel url https://apna-worker.workers.dev</span></p>' +
+      '</div>';
+    return;
+  }
+  if (!WORKER) {
+    gSay('⚠️ Pul (Cloudflare Worker) ka pata nahi mila — bot me <b>/panel url https://…</b> likh kar dobara /panel karein');
+    return;
+  }
+  guard('/open?t=' + TOKEN, null, 'GET').then(function(j){
+    if (!j || !j.ok) { gSay('🔗 ' + gEsc((j && j.err) || 'pul se baat nahi hui') ); return; }
+    gRefresh();
+    setInterval(gRefresh, 4000);                     // 🔄 3-5 second wala faisla
+    setInterval(function(){ try { refreshStats(); } catch (e) {} }, 30000);
+  });
+})();
+</script>
+
+</body></html>
