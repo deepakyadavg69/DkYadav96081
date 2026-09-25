@@ -1,0 +1,571 @@
+<!DOCTYPE html><html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guardian — feature list (v5.2)</title>
+<style>
+:root{--bg:#07090f;--card:#0c1119;--line:#1c2434;--txt:#e8edf7;--mut:#7f8da3;--vio:#9b7cff;--grn:#5ce6a0;--red:#ff6b7a;--amb:#ffc44d;--cy:#38e1ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Noto Sans Devanagari",Roboto,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:16px 14px 60px}
+h1{font-size:1.3rem;margin:0 0 4px}.sub{color:var(--mut);font-size:.86rem;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:9px;margin-bottom:14px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:11px;background:var(--card)}
+.stat b{display:block;font-size:1.4rem}.stat span{color:var(--mut);font-size:.74rem}
+.box{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--card);margin-bottom:14px}
+.box h2{margin:0 0 9px;font-size:1rem}
+.box.grn{border-color:#1c5340;background:#0a1712} .box.red{border-color:#5c2029;background:#150c0f}
+.newc{display:flex;gap:10px;padding:9px 0;border-top:1px solid #182234} .newc:first-of-type{border-top:0}
+.newc .ic{font-size:1.1rem}.newc b{color:#cfe0ff}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
+.chip{background:#0d1220;border:1px solid var(--line);color:var(--txt);border-radius:20px;padding:7px 12px;font-size:.8rem;font-weight:600;cursor:pointer}
+.chip.on{border-color:var(--vio);background:#171233}
+.f{border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px;background:var(--card)}
+.f .hd{display:flex;gap:9px;justify-content:space-between;align-items:flex-start}
+.f .hd b{font-size:.9rem}
+.b{border-radius:20px;padding:3px 9px;font-size:.68rem;font-weight:700;white-space:nowrap}
+.b.ok{background:#0c2a20;color:var(--grn);border:1px solid #1c5340}
+.b.new{background:#2a2210;color:var(--amb);border:1px solid #5a4a1c}
+.b.bad{background:#2c1116;color:var(--red);border:1px solid #5c2029}
+.mt{color:var(--mut);font-size:.75rem;margin-top:6px}.cat{color:#9fb0c8}
+.mv{color:var(--cy)}.mono{font-family:ui-monospace,Menlo,monospace;color:#8fa0bd}
+table{width:100%;border-collapse:collapse;font-size:.83rem}td,th{padding:6px 4px;border-bottom:1px solid #16202f;text-align:left}
+th{color:var(--mut);font-weight:600;font-size:.75rem}
+.foot{color:#5d6878;font-size:.74rem;text-align:center;margin-top:18px}
+</style></head><body><div class="wrap">
+<h1>Guardian — poora hisaab (v5.2)</h1>
+<div class="sub">Aapke 291 point ka aaj ka haal: kya <b>chalu</b> hai, kya <b>banne wala</b> hai, kya <b>hata diya</b>.</div>
+
+<div class="stats">
+  <div class="stat"><b>247</b><span>kul feature (291 me se hataye ke baad)</span></div>
+  <div class="stat"><b>132</b><span>abhi chalu ✅</span></div>
+  <div class="stat"><b>115</b><span>banne wale</span></div>
+  <div class="stat"><b>44</b><span>hata diye (bekar)</span></div>
+  <div class="stat"><b>147</b><span>command (panel + bot)</span></div>
+</div>
+
+<div class="box grn"><h2>➕ Naye 7 kaam jo aaj jode (v5.2 — sab chalu)</h2>
+<div class="newc"><div class="ic">📱</div><div><b>/openapp</b> — Phone me app kholo — naam ya package se. Panel ke har app par bhi <b>Open</b> button aata hai (ek tap me us device par khul jata hai)</div></div><div class="newc"><div class="ic">📋</div><div><b>/todo</b> — Kaam ki list — jodo, “ho gaya”, hatao. Phone me hi rehta hai, bot band ho to bhi safe</div></div><div class="newc"><div class="ic">⏰</div><div><b>/remind</b> — Yaad dilana — <code>/remind 07:30 dawa lena</code> ya <code>/remind 30m chai</code></div></div><div class="newc"><div class="ic">💊</div><div><b>/dawa</b> — Dawa ka samay — jaise <code>/dawa 08:00 20:00</code>, roz us waqt khabar</div></div><div class="newc"><div class="ic">⏱️</div><div><b>/timer</b> — Minute ka timer — poora hone par khabar + phone bajta hai</div></div><div class="newc"><div class="ic">📍</div><div><b>/geofence</b> — Ilaqa — set karo (<code>/geofence set ghar</code>), chhodte ya ghuste hi khabar (GPS se doori naapta hai)</div></div><div class="newc"><div class="ic">📦</div><div><b>/offline</b> — Net band me jama hua data — net aate hi HTML report + pin (aapka pichhla order)</div></div>
+</div>
+
+<div class="box red"><h2>🗑️ Hataye 44 bekar (AI / chat wale — aapka order)</h2>
+<div class="mt" style="color:#e3d0d4">💬 LOST MODE — phone kho gaya, khud jawab de · 🧵 Baat-cheet me “phir wahi” / follow-up · 🧹 Storage safai (junk dhoondho) · ⚙️ RULE ENGINE — “jab … to …” khud banao · 😴 SO RAHE / BUSY HO TO AUTO-JAWAB · 🔎 DEEP SEARCH — poore phone me sawaal · 📊 KIS SE SABSE ZYADA BAAT — top list · 🧠 AADAT SEEKHNA — bot khud sujhav de · 🧵 10 BAAT YAAD — asli baat-cheet · 🎓 NAYE SHABD SIKHAO (apni bhasha me command) · 📖 BOT KO JAWAB SIKHAO (personal FAQ) · ❤️ BHAVNA SAMAJHE (mood dekh kar jawab) · 🎭 TONE BADALO (/style) · ➡️ HAR JAWAB KE SAATH “AAGE KYA” · 🗣️ KHUD BHASHA PAKDE · 🧷 PERSONAL YAADDAASHT (/yaad) · 📔 DIN KI KAHANI (auto journal) · 🧠 SAMJHO AUR KARO — lambi baat se poora plan · 🧾 BILL + RECHARGE YAAD DILANA · ❓ Adhoori baat par sirf ek sawaal · 🔢 Galat number par samajhdari se sujhav · 💬 Poori baat-cheet wala loop · 📘 /kya — “ye kaise karun?” ka poora jawab · ↩️ “Ye nahi chahiye tha” — chat se undo · 🗣️ Apne shabdon me poora sawaal · 🧠 Smart summary — “in 40 notification me kaam ki baat kya thi?” · 🗓️ Baat se poori plan · ⚙️ “Aisa karo har baar” — baat se rule ban jaye · 💡 Salah aur ideas (duniya ka gyaan) · 📚 Padhai / madad (sawaal + notes se test) · 🛡️ “Kuch galat lag raha hai” — bot khud jaanch kare · 🕵️ SHAK WALA SHABD ZERO · 🧠 “EK BAAR DIYA = YAAD RAHEGA” · 🧾 MACRO / RECIPE — ek shabd, kai kaam · 🔎 /search &lt;shabd&gt; — seedha search kholo · 🕵️ CHHUPI PHOTOS / BHULI VIDEOS DHOONDHO · 🎙️ VOICE NOTE → TEXT (aur dhoondho) · 🎵 MUSIC LIBRARY — gaane dhoondho, chalao · 📥 BROWSER SE DOWNLOAD KI FILES DHOONDHO · ✍️ CHAT ME JAWAB — aapka style (draft + bhejo) · 🎧 MUSIC LIBRARY 2.0 — dhoondho, chalao, queue · 🧹 “JAGAH KAHAN GAYI” — sabse bade 20 kachre dhoondho · 🗑️ TRASH 2.0 — list, dhoondho, wapas-bhejo · 🤝 “DEKH KAR SHAK NA HO” — chhoti-chhoti baatein</div></div>
+
+<div class="box"><h2>♻️ 5 kaam ki cheezein bachai (category badal di, hatayi nahi)</h2>
+<div class="mt">• ⏰ Reminder — “kal subah 7 baje yaad dilana” → <span class="mv">🎛️ App control · routine · ghar</span></div><div class="mt">• 📝 NOTES + YAAD — turant likh do, kabhi bhoolna nahi → <span class="mv">🎛️ App control · routine · ghar</span></div><div class="mt">• 🚪 OWNER LOCK — ek hi chat, pakka (hard lock) → <span class="mv">🔐 Security · token · owner</span></div><div class="mt">• 🙈 TOKEN/CHAT KAHIN NAHI DIKHEGA (poori jagah list) → <span class="mv">🔐 Security · token · owner</span></div><div class="mt">• 🧱 CHAT ID LOCK (badalne par bhi tumhari hi chat) → <span class="mv">🔐 Security · token · owner</span></div>
+<div class="mt" style="margin-top:8px">Aap kahein to inhe bhi hata dunga.</div></div>
+
+<div class="box"><h2>📊 Category-wise (chalu / kul)</h2>
+<table><tr><th>Category</th><th>Chalu</th><th>Kul</th></tr>
+<tr><td>🔐 Security · token · owner</td><td><b>3</b></td><td>5</td></tr><tr><td>🤖 Bot ki samajh (chat/AI)</td><td><b>0</b></td><td>0</td></tr><tr><td>🎛️ App control · routine · ghar</td><td><b>12</b></td><td>42</td></tr><tr><td>📊 Report · browser · diagnostics</td><td><b>15</b></td><td>37</td></tr><tr><td>📸 Camera · photo · video</td><td><b>27</b></td><td>35</td></tr><tr><td>📁 Files · storage · backup</td><td><b>10</b></td><td>23</td></tr><tr><td>🔄 Update · APK · permission</td><td><b>33</b></td><td>43</td></tr><tr><td>📞 Call · SMS · 🎵 Awaaz</td><td><b>22</b></td><td>35</td></tr><tr><td>🚨 Chori · suraksha · SOS</td><td><b>10</b></td><td>27</td></tr>
+</table></div>
+
+<div class="chips">
+  <button class="chip on" data-f="all">Sab (247)</button>
+  <button class="chip" data-f="live">Chalu (132)</button>
+  <button class="chip" data-f="todo">Banne wale (115)</button>
+</div>
+<div id="list"><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#7 🎙️ Aas-paas ki awaaz (30–60 sec recording)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/rec</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#18 🎤 Voice note se command</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#49 🎭 JAALI CALL — bachne ke liye (fake incoming call)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/call</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#51 📣 Loud bolo — phone par bhaari awaaz me message</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">loud</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#54 📨 SMS SE CONTROL — bina internet wala raasta</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#72 💰 PAISA DIGEST — bank ke SMS se aaj ka hisaab</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#73 🔊 JAWAB AWAZ ME (voice note)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#88 🎙️ BOT APNA — naam, awaaz, style apne hisaab se</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#111 🎤 AAVAZ SE AAVAZ — poori voice baat-cheet</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#116 👂 LIVE KAN (walkie-talkie jaisa)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">kan,listen</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#127 📲 WHATSAPP/APP CALL ALERT</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/call</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#128 🔊 CALL SMOOTH MODE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/call</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#129 🚫 SPAM CALL BLOCKER</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/lock</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#140 👥 CONTACT ME KYA BADLA — alert</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/contacts</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#143 📞 CALL ME BACK — “15 min me wapas call”</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/call</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#168 🎤 Awaaz me sawaal, awaaz me jawab</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#191 🎙️ MIC bhi chhote tukde me</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#265 🎭 AWAAZ BADLO (maza + kaam)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#266 🔇 SAaf AUDIO — shor hata kar</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#267 🔊 SPEAKER MODE — phone tumhara speaker</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/say</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#269 🔔 RINGTONE MAKER — clip kaato, ringtone banao</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">ringtone</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#270 🎉 PARTY / SPEAKER MODE — playlist + sleep timer</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/say</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#316 🎼 PLAYLIST + MOOD</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#317 ⏰ SLEEP TIMER + “dheere-dheere band”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#318 ☁️ TELEGRAM SE GAANA — save + bajao</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#319 🔊 SUNNE KA ANDAAZ — loud/headphone/normal</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">audioout</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#321 🎤 “BOLEIN AUR PHONE BOL DE” — chhota announcement</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#322 👉 “CALL KARO AUR MESSAGE BOL DO” ⭐</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/call</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#324 📅 CALL KA DAILY HISAAB</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/call</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#325 📲 MISSED CALL PAR KHUd KAAM</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/call</span></div></div><div class="f" data-live="0" data-cat="calls">
+      <div class="hd"><b>#328 🧾 OTP KA SAFE TAREeka</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#329 🚫 SPAM/SHAK WALE SMS — alag chhanno</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#330 👥 GROUP SMS — sirf apne chune logon ko</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#331 ⏱️ SMS KI HARAKAT — “kab-kab aaya”</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="1" data-cat="calls">
+      <div class="hd"><b>#332 💌 SMS KA DRAFT PEHLE, PHIR BHEJO</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📞 Call · SMS · 🎵 Awaaz</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#17 🖼️ Bot ko photo/voice bhejo → app kaam kare</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#60 🎬 SCREEN FILM — 30 second ka “screen video”</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/vidrec</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#67 🗺️ PHOTO KA SAFAR — kaun sa mahina, kaun si jagah</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#75 🚨 SCAM GUARD — shak wale SMS/link par warning</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#81 📹 PURANA PHONE = CCTV CAMERA</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#82 👶 AWAZ SENSOR — bachha/patient ka kamra</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">mic</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#90 📄 DOCUMENT SCAN → PDF</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#91 🔳 QR / BARCODE PADHO</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/qr</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#95 🖼️ PHOTO STORY — 100 photo, ek album file</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#106 🖼️ WALLPAPER = MADAD KA MESSAGE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">wallpaper</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#117 👀 LIVE CAMERA VIEW</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">cam,camera</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#125 📸 VIDEO CALL AUTO-SCREENSHOT</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/screen</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#130 🗂️ SCREENSHOT EVIDENCE ALBUM</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/screen</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#164 🔍 Photo/scan me se text nikaalo (OCR)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#176 🙂 CHEHRA MODE — “koi saamne hai”</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">face</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#189 ⚡ 1-SECOND CAMERA — dot sirf jhalak</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#196 🎬 APP SE VIDEO/PHOTO SEND BHI</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#233 🎨 TEMPLATES — file/album/message ka look</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#248 📖 PAGE PADHO — link ka text + screenshot</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/screen</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#250 🔳 LINK KA QR — doosre phone ke liye</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/qr</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#255 📸 SMART ALBUM + DUBLE सफाई</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#256 🖌️ PHOTO SUDHAAR (bhejne se pehle)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#257 🎞️ 10 PHOTO + 1 GAANA = VIDEO (slideshow) ⭐</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#258 📅 “AAJ KA PAL” — roz ki 1 best photo ka album</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#260 🎯 BURST ME SE BEST PHOTO</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#261 ✂️ VIDEO TOOLS — kaat, chhota kar, nikaalo</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/vidrec</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#262 ⏩ TIMELAPSE CAMERA — 8 ghante ek clip me</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#263 🐢 SLOW-MO CLIP</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#271 🏷️ GAANE/VIDEO KE NAAM-TAGS THEEK KARO</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/vidrec</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#284 🔳 KISI BHI PAGE KA QR</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/qr</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#334 🔍 PHOTO KI POORI DETAIL — “ye kab, kahan, kis se”</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#335 📄 PHOTO → PDF (ek hi file me kai page)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/photo now</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#336 ✂️ PRIVACY CROP — screenshot me se baat kaato</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">/screen</span></div></div><div class="f" data-live="1" data-cat="camera">
+      <div class="hd"><b>#337 🖼️ PHOTO SE WALLPAPER / LOCK SCREEN</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span> · <span class="mono">lockwall</span></div></div><div class="f" data-live="0" data-cat="camera">
+      <div class="hd"><b>#338 🎞️ HAFTE KA ALBUM + “best of mahina”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📸 Camera · photo · video</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#14 📆 Weekly report (HTML file)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/report</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#21 👥 Contacts ka backup Telegram par</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/contacts</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#24 📁 Folder ka daily auto-backup</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/storage</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#41 🔒 App delete hone se rok (thief-proof)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#78 🧹 AUTO-CLEAN 2.0 — safai khud chale</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#93 🗜️ BADA ZIP — poori gallery ek file me (parts me)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#104 ⏳ TIME MACHINE — roz ka snapshot</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#131 🧾 CALL PROOF FILE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/call</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#135 📁 FOLDER WATCH — naya kuch aaya to batao</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#141 📦 AUTO-ARCHIVE — phone khaali, saboot Telegram me</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#163 📄 Aapki files ke andar se jawab</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/files</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#225 🔑 KEYSTORE = UPDATE KI JAAN (aaj hi backup ho gaya ✅)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/update</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#240 💾 POORA PROFILE EXPORT — naya phone, same halat</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#243 🔐 LOCKED VAULT — nazuk cheezein taale me</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/lock</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#275 📄 PAGE → FILE/PDF/TEXT</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#285 🧹 BROWSER SAFAI (privacy)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#320 🎚️ AUDIO THEEK KARO (file ke saath)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#327 📚 SMS KA POORA ARCHIVE (search ke saath)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/sms</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#339 🛡️ DELETE GUARD — delete hone se PEHLE chup-chaap copy ⭐</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#342 👀 DELETE DETECT — “aaj kaun si files gayi”</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/files</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#345 ☁️ 30 DIN SE PEHLE TELEGRAM PAR — “kuch bhi hamesha ke liye na jaye”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="0" data-cat="files">
+      <div class="hd"><b>#346 🧊 DELETE FREEZE — 24 ghante ka taala</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span></div></div><div class="f" data-live="1" data-cat="files">
+      <div class="hd"><b>#347 📝 RECOVERY GUIDE + DELETED REPORT</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📁 Files · storage · backup</span> · <span class="mono">/report</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#9 🚗 Safar (trip) log</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/log</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#28 🌐 Net ka hisaab</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#30 🔋 Battery audit report</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/battery</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#37 🧾 EVIDENCE PACK — ek command, poori report</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">evidence,pack</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#42 🔐 NAYA “CHORI KA REPORT” — pehle kya hua, kab hua</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/report</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#48 📶 Wifi se andar tak pata karo</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/net</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#56 🎯 Smart auto-jawab — “kya hua?” par poora hisaab</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#68 🔥 30 DIN KA NAQSHA (heatmap HTML)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#70 🛡️ SUraksha SCORE CARD — mera phone kitna safe hai</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#96 ⏰ SCREEN TIME REPORT CARD (per app, per ghanta)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">screentime</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#100 🕘 AUTO ATTENDANCE — aane-jane ka record</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/rec</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#121 🗺️ SAFAR KA MAP PAGE (HTML)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#138 📶 NETWORK LOG — net kab gira</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/log</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#139 🕰️ PAST QUERY — “kal 3 baje kaun sa app chala tha?”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#142 🔔 SMART DIGEST — 50 me se sirf 5 zaroori</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#167 🌐 Translate — “isko English me likh do”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#192 📋 KAUN-KAUN SE KAAM ME NISHaan AATA HAI (poori list)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#199 📊 “KYA-KYA THEEK KIYA” REPORT</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/report</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#212 👉 1-TAP GUIDE — jo haath se deni hai, seedha usi page par</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#237 🩺 REMOTE DIAGNOSTICS — app apni poori halat bata de</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">doctor,check,selfcheck,testall,test</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#238 📊 COMMAND REGISTRY — kaun sa command kitna chalta hai</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#239 📥 OFFLINE QUEUE 2.0 — net na ho to kaam jama rahe</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#244 📜 SELF AUDIT — “kis waqt kya hua” ka poora record</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">log,events</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#246 🌐 /kholo &lt;link&gt; — default browser me kholo</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#247 📱 KHAAS APP ME KHOLO</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#249 ✍️ PAGE PAR KHUD TAP/TYPE (auto-fill)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#251 🧪 LINK JAANCH — “khul raha hai ya nahi”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#273 🧯 SAFETY NET — galat token lag gaya to purane par wapas</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#276 👀 PAGE WATCH — badlav hone par alert ⭐ (sabse kaam ka)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/alertson</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#277 🔖 BROWSER KE BOOKMARKS BHEJO</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/bookmarks</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#279 🕘 BROWSER HISTORY — kahan-kahan gaye</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">/browserhistory</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#281 🛡️ “YE LINK SAFE HAI KYA?”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#282 🎬 YOUTUBE/INSTA PAGE SE INFO</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#283 📰 “PADHO AUR SAMJHA DO”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#286 💾 “BAAD ME PADHNE KE LIYE SAVE”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="1" data-cat="report">
+      <div class="hd"><b>#306 💬 WHATSAPP KA HAAL — ek message me</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span> · <span class="mono">whatsapp</span></div></div><div class="f" data-live="0" data-cat="report">
+      <div class="hd"><b>#314 📢 PAGE/CHANNEL KA HAAL</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">📊 Report · browser · diagnostics</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#11 ⏰ Reminder — “kal subah 7 baje yaad dilana”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mv">pehle “Bot ki samajh” me tha → ab 🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#12 📋 To-do list bot me</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#19 🗣️ “sab batao” — ek line me poora haal</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#22 📎 Clipboard bhejo</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#25 🔋 Battery-friendly mode</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">/battery</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#34 ⌨️ Doosre phone par type karna (remote typing)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">/ping</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#55 🧾 “Sab batao” ke aur roop</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">status,battery,net,device,ip,sim,ram,storage,cpu</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#63 🕗 SAMAY PAR MESSAGE — “subah 8 baje bhej dena”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#74 🎛️ QUICK ACTIONS — 6 bade button, turant kaam</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#76 📝 NOTES + YAAD — turant likh do, kabhi bhoolna nahi</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mv">pehle “Bot ki samajh” me tha → ab 🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#79 📱 EK BOT, KAI PHONE — ghar ke sab phone ek jagah</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#80 💛 GHAR WALON KA KHAYAAL — sabka halat ek message me</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#83 📦 NAYA PHONE = EK COMMAND ME SHIFT</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#86 ↩️ UNDO — galti ho gayi to wapas</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#92 🛑 APP ZABARDASTI BAND — RAM aur battery bachao</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">/battery</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#94 📋 CHALU KAAM BOARD</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#98 🎚️ MODES — ek command me poora mood set</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#102 🔘 VOLUME BUTTON SHORTCUTS (bina phone kholne)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">/volume</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#105 🪜 BATTERY KI SEEDHI (khud dheere hota jaaye)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">/battery</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#145 📍 GHAR SE KITNI DOOR — live distance</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#146 ⏱️ JOB TIMER — chalu kaam ka live countdown</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#149 “Kya aap ye kehna chahte hain?” — confirm karo, phir chala do</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#150 🔤 Galat spelling bhi samjhe (typo tolerance)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#152 🎯 Teen darje ka bharosa (kab poochhe, kab khud kar de)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#153 🧩 Ek line me do-teen kaam</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#154 🅰️ Devanagari + roman dono</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#156 ✂️ Aadha naam kaafi hai</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#173 🧾 “Poora din samjha do”</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#187 🩹 ERROR KA SILSILA — screen ↔ bot</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">/screenon</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#193 ▶️ /chalao whatsapp — koi bhi app kholo (NAYA, abhi nahi hai)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">chalao</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#194 ⏹️ /bandapp whatsapp — band bhi karo</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">bandapp</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#195 🤖 APP KE ANDAR BOT SE KAAM</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#221 🔁 RESTART PAR KHUd JAANCH</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#224 🆘 “1 TAP CHAHIYE” — imaandaar message</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#227 🧑‍🔧 3-MINUTE SETUP TOUR (naye phone ke liye)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#230 🎛️ FEATURE FLAGS — koi bhi feature bot se ON/OFF</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#231 ⚙️ DEFAULT VALUES BADALNA</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#291 ⚠️ BOT CONFLICT DETECTION — “koi aur ise chala raha hai” ⭐</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#303 🔁 PASSWORD BADALNA (sirf aap)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">wipepassword</span></div></div><div class="f" data-live="0" data-cat="routine">
+      <div class="hd"><b>#304 🧾 PASSWORD WALE SAARE KAAM KI LIST</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#309 ⏳ SOCIAL MEDIA TIME LIMIT (apne aap band)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">sociallimit</span></div></div><div class="f" data-live="1" data-cat="routine">
+      <div class="hd"><b>#310 💤 RAAT ME SOCIAL MEDIA = DND</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🎛️ App control · routine · ghar</span> · <span class="mono">dnd</span></div></div><div class="f" data-live="1" data-cat="sec">
+      <div class="hd"><b>#289 🚪 OWNER LOCK — ek hi chat, pakka (hard lock)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔐 Security · token · owner</span> · <span class="mono">/lock</span> · <span class="mv">pehle “Bot ki samajh” me tha → ab 🔐 Security · token · owner</span></div></div><div class="f" data-live="0" data-cat="sec">
+      <div class="hd"><b>#292 🙈 TOKEN/CHAT KAHIN NAHI DIKHEGA (poori jagah list)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔐 Security · token · owner</span> · <span class="mv">pehle “Bot ki samajh” me tha → ab 🔐 Security · token · owner</span></div></div><div class="f" data-live="1" data-cat="sec">
+      <div class="hd"><b>#294 🧱 CHAT ID LOCK (badalne par bhi tumhari hi chat)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔐 Security · token · owner</span> · <span class="mono">/lock</span> · <span class="mv">pehle “Bot ki samajh” me tha → ab 🔐 Security · token · owner</span></div></div><div class="f" data-live="0" data-cat="sec">
+      <div class="hd"><b>#350 🔒 GROUP JOIN BAND — koi apne group me add na kar sake</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔐 Security · token · owner</span></div></div><div class="f" data-live="1" data-cat="sec">
+      <div class="hd"><b>#352 🙈 APP KABHI USERNAME NA BOLE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔐 Security · token · owner</span> · <span class="mono">/name</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#10 🔐 Khatarnak command ke liye secret code</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#23 ⏱️ Alarm set karna bot se</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#33 👆 Phone ko Telegram se chalana (tap / swipe)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#35 🛑 ANTI-TOUCH SHIELD — screen par message + saare touch band</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">/screenon</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#45 🔇 “Shaant karo sab” — ek command me sab band</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#46 🧒 GUEST MODE — kisi ko diya phone control me rahe</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#50 🌙 Raat ka lock — nind ki suraksha</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">/lock</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#53 😴 Surakshit snooze — chori ka samay pata</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#59 🔐 APP LOCK — chuni hui apps par apna PIN</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">/lock</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#97 ✌️ DO-JAGAH SE CONFIRM — khatarnak kaam ki double taala</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#118 🕵️ CHORI KE BAAD — FORENSICS PACK (khud se)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#183 ⏱️ SO JAO / JAAG JAO — samay se band</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#184 🤫 POORI CHUPPI MODE — ek switch</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#242 ⏰ CLOCK GUARD — samay sahi rahe</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">/lock</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#272 🔁 TOKEN BADALNE KA 2-STEP TAREeka (sirf aap kar sakte hain)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#274 📜 BADLAV KA RECORD — kis waqt kya badla</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">changes</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#293 🔐 PREF TAMPER-PROOF — koi haath se badle to pakda jaye</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#296 📊 /security — ek jagah poori halat</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">security</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#297 🔔 TOKEN LEAK KA ILAJ — 2 MINUTE ME (aaj hi kaam aayega)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#298 🏠 PHONE KHULNE PAR BHI KUCH NAHI DIKHE</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#300 🛡️ IMANDAAR SEEMA (sach jo bolna zaroori hai)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#301 👋 AJNABI KE SAATH KYA KAREIN — 3 option</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#302 🔐 WIPE PASSWORD — sirf itna message, aur kuch nahi</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">wipe</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#305 🕵️ GALAT CODE KI HISTORY</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">/browserhistory</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#323 🤫 CHosen NUMBERS KO BLOCK / MANA</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">/lock</span></div></div><div class="f" data-live="0" data-cat="sos">
+      <div class="hd"><b>#353 ✅ STRANGER-PROOF CHECKLIST (ek command)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span></div></div><div class="f" data-live="1" data-cat="sos">
+      <div class="hd"><b>#356 🛡️ LOCKDOWN EK SAATH — poori list ek command me</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🚨 Chori · suraksha · SOS</span> · <span class="mono">/lock</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#20 ✍️ Aapke bolne ke naye tareeke sikhana</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#29 📉 Chhota + tez APK (R8 code shrink)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#31 🛟 Self-heal 2.0</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#36 📞 Auto-answer (sirf aapke number se aane wali call)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/call</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#47 ⬆️ Bot se hi app update (naya APK bhejo, khud lag jaye)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#87 ☁️ TELEGRAM = AAPKA CLOUD (dono taraf)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">sendsms,sms,recent,contacts,clipboard</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#155 🎓 Aapki galtiyon se seekhna</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#165 🧮 Aapka hisaab samajhna</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#172 ✍️ Message draft — aapke style me</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#197 🩺 DOCTOR 2.0 — khud theek karne wala</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#198 ✅ JO APP KHUD THEEK KAR SAKTI HAI (10 cheezein)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#200 🆘 “SABSE PEHLE AAPKO BATANA” niyam</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#201 ♻️ ANDROID WALON SE BACHO (company ka dhakka)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#202 ⬆️ REMOTE UPDATE — bot se naya APK, phone me apne aap</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">update</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#203 👆 AUTO-INSTALL TAP (haath lagane ki zarurat khatam) ⭐</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#205 ↩️ ROLLBACK — naya update kharab lage to pichhla wapas</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#206 🩹 KHUd KO THEEK KARNE WALA UPDATE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#208 🧠 UPDATE KE BAAD SAB YAAD RAKHNA</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#209 ⚡ PATCH BINA INSTALL (chhoti cheezein turant)</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#210 🌙 RAAT 2 BAJE UPDATE (sabse baval combo)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#211 📋 PERMISSION MANAGER — ek jagah poori list</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">perm</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#213 ⏰ “JAB PAAS HO TAB” LIST</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">paas</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#214 🚫 DOBARA NA POOCHHNE KA PAKKA NIYAM</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#216 🛡️ PLAY PROTECT NOTE — “Install anyway” khud</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#217 📱 DO PHONE, EK UPDATE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#218 🧪 UPDATE “DRY RUN” — pehle batao, phir karo</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#219 📦 APK KA COMMON HISSA (data bachao)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#220 📜 UPDATE DIARY — kis din kya aaya</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#223 🔘 EK BUTTON “UPDATE LAGAO”</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#228 📊 PERMISSION HEALTH — hafte me ek line</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/health</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#229 🔑 TOKEN/SECRET BADALNA — bina APK! (sabse important)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">token</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#232 📖 HELP/MENU KHUd UPDATE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#235 🗣️ BHASHA PACK — nayi bhasha/bole bina APK</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#236 🗂️ PATCH MANAGER — record + rollback</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/rec</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#241 🧯 GRACEFUL DEGRADE — ek permission na ho to baaki sab chalе</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="0" data-cat="update">
+      <div class="hd"><b>#245 ♻️ VERSION SHIM — purane phone par bhi naye feature</b><span class="b new">banna hai</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#253 🔍 APK JAANCH — galat/khatarnak APK lagne se pehle</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#254 🧰 PURANE APK KA SAFE GHAR</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#280 ⌨️ FORM BHARNA (aapke apne form)</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#287 📶 SLOW NET PAR BHI UPDATE</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#288 🧹 UPDATE KE BAAD SAFAAI</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/update</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#290 🕵️ STRANGER KE POORI DETAIL AAPKO (aapki demand) ⭐</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">strangers,ajnabi</span></div></div><div class="f" data-live="1" data-cat="update">
+      <div class="hd"><b>#299 🧭 “YE MERE NUMBER PAR CHAL RAHA HAI” — sirf aapka</b><span class="b ok">chalu</span></div>
+      <div class="mt"><span class="cat">🔄 Update · APK · permission</span> · <span class="mono">/apk</span></div></div></div>
+<div class="foot">Guardian · Features.kt se seedha banaya · v5.2 · 25-09-2026</div>
+</div>
+<script>
+var cur="all";
+function show(){document.querySelectorAll('.f').forEach(function(el){
+  var ok = cur==="all"? true : (cur==="live"? el.dataset.live==="1" : el.dataset.live==="0");
+  el.style.display = ok? "block":"none"; });}
+document.querySelectorAll('.chip').forEach(function(b){b.onclick=function(){
+  cur=b.dataset.f; document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});
+  b.classList.add('on'); show(); };});
+show();
+</script></body></html>
